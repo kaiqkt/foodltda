@@ -4,9 +4,9 @@ server:
 spring:
   application:
     name: merchant-service
-#  data:
-#    mongo:
-#      uri: mongodb://localhost:27018/merchant
+  data:
+    mongodb:
+      uri: mongodb://localhost:27018/merchant
 
 eureka:
   instance:
