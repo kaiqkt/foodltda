@@ -1,6 +1,6 @@
 package com.foodltda.merchantservice.application.handler
 
-import com.foodltda.merchantservice.domain.exceptions.CityNotFoundException
+import com.foodltda.merchantservice.domain.exceptions.ResultBindingException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -12,15 +12,14 @@ import java.util.*
 
 
 @ControllerAdvice
-class RestExceptionHandler : ResponseEntityExceptionHandler() {
+class ErrorHandler : ResponseEntityExceptionHandler() {
 
-    @ExceptionHandler(CityNotFoundException::class)
-    fun handleCityNotFoundException(
-            ex: CityNotFoundException?, request: WebRequest?): ResponseEntity<Any?>? {
+    @ExceptionHandler(ResultBindingException::class)
+    fun handleResultBindingException(
+            ex: ResultBindingException?, request: WebRequest?): ResponseEntity<Any?>? {
         val body: MutableMap<String, Any> = LinkedHashMap()
         body["timestamp"] = LocalDateTime.now()
-        body["message"] = "City not found"
-        return ResponseEntity(body, HttpStatus.NOT_FOUND)
+        body["message"] = ex?.message!!
+        return ResponseEntity(body, HttpStatus.UNPROCESSABLE_ENTITY)
     }
-
 }
