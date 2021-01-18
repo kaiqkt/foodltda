@@ -19,7 +19,7 @@ class ErrorHandler : ResponseEntityExceptionHandler() {
             ex: ResultBindingException?, request: WebRequest?): ResponseEntity<Any?>? {
         val body: MutableMap<String, Any> = LinkedHashMap()
         body["timestamp"] = LocalDateTime.now()
-        body["message"] = ex?.message!!
+        body["message"] = ex?.details()!!
         return ResponseEntity(body, HttpStatus.UNPROCESSABLE_ENTITY)
     }
 }

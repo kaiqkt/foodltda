@@ -22,4 +22,9 @@ class LegalPersonController(val legalPersonService: LegalPersonService, val lega
         return ResponseEntity(HttpStatus.CREATED)
     }
 
+    @PutMapping("/update")
+    fun update(){}
+
+    @GetMapping
+    fun profile(){}
 }
