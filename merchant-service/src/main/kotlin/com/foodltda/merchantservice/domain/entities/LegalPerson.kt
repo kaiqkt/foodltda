@@ -1,5 +1,6 @@
 package com.foodltda.merchantservice.domain.entities
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.foodltda.merchantservice.application.dto.Address
 import com.foodltda.merchantservice.application.dto.request.PersonRegistrationDTO
 import org.springframework.data.annotation.Id
@@ -13,6 +14,7 @@ data class LegalPerson (
     val email: String?,
     val cnpj: String?,
     val address: Address?,
+    @JsonIgnore
     val password: String?,
     val telephone: String?,
 ) {
