@@ -40,10 +40,10 @@ class LegalPersonService(
     }
 
     fun update(personId: String, person: UpdatePerson, response: Response<Any>, result: BindingResult): Response<Any> {
+        val legalPerson = currentPerson(personId)
         checkDataAvailability(person.email, null, person.telephone, result)
         ResultValidation.check(response, result)
 
-        val legalPerson = currentPerson(personId)
 //        val loginUser = currentUser(personId)
 
 
@@ -76,15 +76,8 @@ class LegalPersonService(
         return response
     }
 
-    fun currentPerson(personId: String): Optional<LegalPerson> {
-        val user = legalPersonRepository.findById(personId)
-
-        if (user.get().id != null) {
-            return user
-        } else {
-            throw LegalPersonNotFoundException("Legal person of id: ${user.get().id} does not exist")
-        }
-    }
+    //alterar isso aqui que ta muito feio
+    fun currentPerson(personId: String) = legalPersonRepository.findById(personId)
 
 //    fun currentUser() = legalPersonRepository.findByEmail(authenticated().username)
 

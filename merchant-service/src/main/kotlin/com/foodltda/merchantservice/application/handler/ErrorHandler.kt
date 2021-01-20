@@ -18,7 +18,8 @@ class ErrorHandler : ResponseEntityExceptionHandler() {
     @ExceptionHandler(ResultBindingException::class)
     fun handleResultBindingException(
             ex: ResultBindingException?, request: WebRequest?): ResponseEntity<Any?>? {
-        logger.error("Invalid result binding: ${request?.contextPath}")
+        val uri: List<String>? = request?.getDescription(true)?.split(";")
+        logger.error("Invalid result binding: ${uri?.get(0)}")
 
         val body: MutableMap<String, Any> = LinkedHashMap()
         body["timestamp"] = LocalDateTime.now()
@@ -26,10 +27,11 @@ class ErrorHandler : ResponseEntityExceptionHandler() {
         return ResponseEntity(body, HttpStatus.UNPROCESSABLE_ENTITY)
     }
 
-    @ExceptionHandler(LegalPersonNotFoundException::class)
+    @ExceptionHandler(NoSuchElementException::class)
     fun handleUserNotFoundException(
-            ex: LegalPersonNotFoundException?, request: WebRequest?): ResponseEntity<Any?>? {
-        logger.error("Legal person not found: ${request?.contextPath}")
+            ex: NoSuchElementException?, request: WebRequest?): ResponseEntity<Any?>? {
+        val uri: List<String>? = request?.getDescription(true)?.split(";")
+        logger.error("Legal person not found: ${uri?.get(0)}")
 
         val body: MutableMap<String, Any> = LinkedHashMap()
         body["timestamp"] = LocalDateTime.now()
