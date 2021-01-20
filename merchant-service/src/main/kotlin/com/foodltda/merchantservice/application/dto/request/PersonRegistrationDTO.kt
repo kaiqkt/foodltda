@@ -17,5 +17,5 @@ data class PersonRegistrationDTO(
         @get:NotEmpty(message = "Password cannot be empty.")
         val password: String = "",
         @get:NotEmpty(message = "Telephone cannot be empty.")
-        val telephone: String = "",
+        val telephone: String = ""
 )

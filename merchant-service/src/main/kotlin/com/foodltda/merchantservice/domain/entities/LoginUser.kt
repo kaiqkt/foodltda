@@ -5,8 +5,8 @@ import org.springframework.data.annotation.Id
 data class LoginUser(
         @Id
         val id: String? = null,
-        val email: String,
-        val password: String,
+        val email: String?,
+        val password: String?,
         val role: Profile = Profile.ROLE_USER
 ) {
     companion object {

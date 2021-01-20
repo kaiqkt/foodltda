@@ -9,12 +9,12 @@ import org.springframework.data.mongodb.core.mapping.Document
 data class LegalPerson (
     @Id
     val id: String? = null,
-    val name: String,
-    val email: String,
-    val cnpj: String,
-    val address: Address,
-    val password: String,
-    val telephone: String,
+    val name: String?,
+    val email: String?,
+    val cnpj: String?,
+    val address: Address?,
+    val password: String?,
+    val telephone: String?,
 ) {
     companion object {
         fun fromDocument(person: PersonRegistrationDTO) =

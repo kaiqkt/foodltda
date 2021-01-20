@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository
 @Repository
 interface LegalPersonRepository: MongoRepository<LegalPerson, String> {
     fun findLegalPersonByCnpj(cnpj: String): LegalPerson
+    fun existsByTelephone(telephone: String): Boolean
     fun existsByEmail(email: String): Boolean
     fun existsByCnpj(cnpj: String): Boolean
 }
