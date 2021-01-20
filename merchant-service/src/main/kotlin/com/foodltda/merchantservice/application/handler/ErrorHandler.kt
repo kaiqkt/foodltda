@@ -1,6 +1,7 @@
 package com.foodltda.merchantservice.application.handler
 
 import com.foodltda.merchantservice.domain.exceptions.ResultBindingException
+import com.foodltda.merchantservice.domain.exceptions.LegalPersonNotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -17,9 +18,22 @@ class ErrorHandler : ResponseEntityExceptionHandler() {
     @ExceptionHandler(ResultBindingException::class)
     fun handleResultBindingException(
             ex: ResultBindingException?, request: WebRequest?): ResponseEntity<Any?>? {
+        logger.error("Invalid result binding: ${request?.contextPath}")
+
         val body: MutableMap<String, Any> = LinkedHashMap()
         body["timestamp"] = LocalDateTime.now()
         body["message"] = ex?.details()!!
         return ResponseEntity(body, HttpStatus.UNPROCESSABLE_ENTITY)
+    }
+
+    @ExceptionHandler(LegalPersonNotFoundException::class)
+    fun handleUserNotFoundException(
+            ex: LegalPersonNotFoundException?, request: WebRequest?): ResponseEntity<Any?>? {
+        logger.error("Legal person not found: ${request?.contextPath}")
+
+        val body: MutableMap<String, Any> = LinkedHashMap()
+        body["timestamp"] = LocalDateTime.now()
+        body["message"] = ex?.message!!
+        return ResponseEntity(body, HttpStatus.NOT_FOUND)
     }
 }

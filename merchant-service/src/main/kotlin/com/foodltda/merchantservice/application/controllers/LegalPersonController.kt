@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/person")
 class LegalPersonController(val legalPersonService: LegalPersonService, val legalPersonRepository: LegalPersonRepository) {
 
     @PostMapping("/register")
@@ -28,9 +28,11 @@ class LegalPersonController(val legalPersonService: LegalPersonService, val lega
         val response = Response<Any>()
         val update = legalPersonService.update(personId, person, response, result)
 
-        return ResponseEntity.ok(update)
+        return ResponseEntity.ok(update.data as Any)
     }
 
-    @GetMapping
-    fun profile(){}
+    @GetMapping("/current/{personId}")
+    fun profile(@PathVariable personId: String){
+
+    }
 }

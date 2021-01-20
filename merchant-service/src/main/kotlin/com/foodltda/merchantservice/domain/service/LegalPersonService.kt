@@ -1,11 +1,11 @@
 package com.foodltda.merchantservice.domain.service
 
-import com.foodltda.merchantservice.application.dto.Address
 import com.foodltda.merchantservice.application.dto.request.PersonRegistrationDTO
 import com.foodltda.merchantservice.application.dto.request.UpdatePerson
 import com.foodltda.merchantservice.application.dto.response.Response
 import com.foodltda.merchantservice.domain.entities.LegalPerson
 import com.foodltda.merchantservice.domain.entities.LoginUser
+import com.foodltda.merchantservice.domain.exceptions.LegalPersonNotFoundException
 import com.foodltda.merchantservice.domain.validation.ResultValidation
 import com.foodltda.merchantservice.resouce.repositories.LegalPersonRepository
 import com.foodltda.merchantservice.resouce.repositories.LoginPersonRepository
@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.validation.BindingResult
 import org.springframework.validation.ObjectError
-import javax.validation.constraints.Email
+import java.util.*
 
 @Service
 class LegalPersonService(
@@ -69,13 +69,22 @@ class LegalPersonService(
             logger.info("Update legal person for legalPersonId: ${it.id}")
         }
 
-        response.data = updatePerson
+        response.data = mapOf("legalPerson" to updatePerson)
+//        val jwt = "aa"
+//        val (response_, token) = Pair(response, jwt)
 
         return response
     }
 
-    fun currentPerson(personId: String) = legalPersonRepository.findById(personId)
-    fun currentUser(userId: String) = loginPersonRepository.findById(userId)
+    fun currentPerson(personId: String): Optional<LegalPerson> {
+        val user = legalPersonRepository.findById(personId)
+
+        if (user.get().id != null) {
+            return user
+        } else {
+            throw LegalPersonNotFoundException("Legal person of id: ${user.get().id} does not exist")
+        }
+    }
 
 //    fun currentUser() = legalPersonRepository.findByEmail(authenticated().username)
 
