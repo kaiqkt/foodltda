@@ -12,24 +12,26 @@ import org.springframework.data.mongodb.core.mapping.Document
 data class Restaurant (
         @Id
         val id: String? = null,
+        val restaurantName: String,
         val owner: Owner,
         val image: String,
-        val address: Address,
+        val address: Address?,
         val telephone: String,
         val deliveryTime: MutableList<DeliveryTime> = mutableListOf(),
-        val restaurantLabelList: MutableList<RestaurantLabel> = mutableListOf(),
+        val foodCategory: MutableList<FoodCategory> = mutableListOf(),
         val paymentMethods: MutableList<Payment> = mutableListOf(),
         val products: MutableList<Products> = mutableListOf()
 ) {
         companion object{
-                fun fromDocument(restaurantDTO: RestaurantRegistrationDTO) =
+                fun fromDocument(owner: Owner, restaurantDTO: RestaurantRegistrationDTO) =
                         Restaurant(
-                                owner = restaurantDTO.owner,
+                                owner = owner,
+                                restaurantName = restaurantDTO.name,
                                 image = restaurantDTO.image,
                                 address = restaurantDTO.address,
                                 telephone = restaurantDTO.telephone,
                                 deliveryTime = restaurantDTO.deliveryTime,
-                                restaurantLabelList = restaurantDTO.restaurantLabelList,
+                                foodCategory = restaurantDTO.foodCategory,
                                 paymentMethods = restaurantDTO.paymentMethods
                         )
         }

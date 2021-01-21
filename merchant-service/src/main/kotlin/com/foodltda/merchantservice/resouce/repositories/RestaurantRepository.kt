@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface RestaurantRepository : MongoRepository<Restaurant, String> {
+    fun existsByRestaurantName(name: String): Boolean
+    fun existsByTelephone(telephone: String): Boolean
 }
