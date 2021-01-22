@@ -2,7 +2,6 @@ package com.foodltda.merchantservice.application.dto.request
 
 import com.foodltda.merchantservice.application.dto.Address
 import com.foodltda.merchantservice.application.dto.DeliveryTime
-import com.foodltda.merchantservice.domain.entities.FoodCategory
 import com.foodltda.merchantservice.domain.entities.enums.Payment
 
 data class UpdateRestaurant (
@@ -11,6 +10,6 @@ data class UpdateRestaurant (
     val address: Address? = null,
     val telephone: String? = null,
     val deliveryTime: MutableList<DeliveryTime>? = null,
-    val foodCategory: MutableList<FoodCategory>? = null,
+    val foodCategory: MutableList<String>? = null,
     val paymentMethods: MutableList<Payment>? = null
 )

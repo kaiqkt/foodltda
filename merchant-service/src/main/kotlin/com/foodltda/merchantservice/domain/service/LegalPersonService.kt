@@ -40,23 +40,22 @@ class LegalPersonService(
     }
 
     fun update(personId: String, person: UpdatePerson, response: Response<Any>, result: BindingResult): Response<Any> {
-        val legalPerson = currentPerson(personId)
+        val legalPerson = currentPerson(personId).get()
         checkDataAvailability(person.email, null, person.telephone, result)
         ResultValidation.check(response, result)
 
 //        val loginUser = currentUser(personId)
 
 
-        val updatePerson = legalPerson.get().copy(
-                id = legalPerson.get().id,
-                name = person.name ?: legalPerson.get().name,
-                email = person.email ?: legalPerson.get().email,
-                cnpj = legalPerson.get().cnpj,
-                address = person.address ?: legalPerson.get().address,
-                password = person.password ?: legalPerson.get().password,
-                telephone = person.telephone ?: legalPerson.get().telephone
+        val updatePerson = legalPerson.copy(
+                id = legalPerson.id,
+                name = person.name ?: legalPerson.name,
+                email = person.email ?: legalPerson.email,
+                cnpj = legalPerson.cnpj,
+                address = person.address ?: legalPerson.address,
+                password = person.password ?: legalPerson.password,
+                telephone = person.telephone ?: legalPerson.telephone
         )
-
 
 //        val updateLogin = loginUser.get().copy(
 //                id = loginUser.get().id,

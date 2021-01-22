@@ -1,7 +1,6 @@
 package com.foodltda.merchantservice.application.handler
 
-import com.foodltda.merchantservice.domain.exceptions.ResultBindingException
-import com.foodltda.merchantservice.domain.exceptions.LegalPersonNotFoundException
+import com.foodltda.merchantservice.domain.exceptions.*
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -32,6 +31,42 @@ class ErrorHandler : ResponseEntityExceptionHandler() {
             ex: NoSuchElementException?, request: WebRequest?): ResponseEntity<Any?>? {
         val uri: List<String>? = request?.getDescription(true)?.split(";")
         logger.error("Legal person not found: ${uri?.get(0)}")
+
+        val body: MutableMap<String, Any> = LinkedHashMap()
+        body["timestamp"] = LocalDateTime.now()
+        body["message"] = ex?.message!!
+        return ResponseEntity(body, HttpStatus.NOT_FOUND)
+    }
+
+    @ExceptionHandler(OwnerException::class)
+    fun handleUserOwnerException(
+            ex: OwnerException?, request: WebRequest?): ResponseEntity<Any?>? {
+        val uri: List<String>? = request?.getDescription(true)?.split(";")
+        logger.error("Person id not related to the restaurant: ${uri?.get(0)}")
+
+        val body: MutableMap<String, Any> = LinkedHashMap()
+        body["timestamp"] = LocalDateTime.now()
+        body["message"] = ex?.message!!
+        return ResponseEntity(body, HttpStatus.FORBIDDEN)
+    }
+
+    @ExceptionHandler(TagNotFoundException::class)
+    fun handleTagNotFoundException(
+            ex: TagNotFoundException?, request: WebRequest?): ResponseEntity<Any?>? {
+        val uri: List<String>? = request?.getDescription(true)?.split(";")
+        logger.error("Tag not found: ${uri?.get(0)}")
+
+        val body: MutableMap<String, Any> = LinkedHashMap()
+        body["timestamp"] = LocalDateTime.now()
+        body["message"] = ex?.message!!
+        return ResponseEntity(body, HttpStatus.FORBIDDEN)
+    }
+
+    @ExceptionHandler(PaymentNotFoundException::class)
+    fun handlePaymentNotFoundException(
+            ex: PaymentNotFoundException?, request: WebRequest?): ResponseEntity<Any?>? {
+        val uri: List<String>? = request?.getDescription(true)?.split(";")
+        logger.error("Tag not found: ${uri?.get(0)}")
 
         val body: MutableMap<String, Any> = LinkedHashMap()
         body["timestamp"] = LocalDateTime.now()

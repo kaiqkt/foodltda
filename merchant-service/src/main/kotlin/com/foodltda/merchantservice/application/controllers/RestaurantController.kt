@@ -1,6 +1,7 @@
 package com.foodltda.merchantservice.application.controllers
 
 import com.foodltda.merchantservice.application.dto.request.RestaurantRegistrationDTO
+import com.foodltda.merchantservice.application.dto.request.UpdateRestaurant
 import com.foodltda.merchantservice.application.dto.response.Response
 import com.foodltda.merchantservice.domain.service.RestaurantService
 import org.springframework.http.HttpStatus
@@ -21,6 +22,11 @@ class RestaurantController(val restaurantService: RestaurantService) {
         return ResponseEntity(HttpStatus.CREATED)
     }
 
-    @PutMapping("/update/{restaurantId}")
-    fun update(){}
+    @PutMapping("/update/{restaurantId}/{personId}")
+    fun update(@PathVariable restaurantId: String, @PathVariable personId: String, @RequestBody restaurant: UpdateRestaurant, result: BindingResult): ResponseEntity<Any>{
+        val response = Response<Any>()
+        val update = restaurantService.update(restaurantId, personId, restaurant, response, result)
+
+        return ResponseEntity.ok(update.data as Any)
+    }
 }
