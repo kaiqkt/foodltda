@@ -4,5 +4,5 @@ jdk:
   - openjdk9
   - openjdk10
   - openjdk11
-after_script:
+script:
   -cd discovery-service & mvn spring-boot:run & APIURL=http://localhost:8081
