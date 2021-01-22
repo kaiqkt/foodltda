@@ -27,7 +27,7 @@ class RestaurantService(val restaurantRepository: RestaurantRepository, val lega
         val logger: Logger = LoggerFactory.getLogger(RestaurantService::class.java.name)
     }
 
-    fun register(personId: String, restaurant: RestaurantRegistrationDTO, response: Response<Any>, result: BindingResult) {
+    fun register(personId: String, restaurant: RestaurantRegistrationDTO, response: Response<Any>, result: BindingResult): Response<Any> {
         val owner: Owner = legalPersonService.currentPerson(personId).get().let {
             Owner(
                     name = it.name,
@@ -43,20 +43,27 @@ class RestaurantService(val restaurantRepository: RestaurantRepository, val lega
             tagRepository.findByName(tag) ?: throw TagNotFoundException("Tag: $tag not be exist")
         }?.toMutableList()
 
-        restaurantRepository.save(Restaurant.fromDocument(owner, restaurant, tagList))
+        response.data = restaurantRepository.save(Restaurant.fromDocument(owner, restaurant, tagList))
+
+        logger.info("Save new restaurant: ${(response.data as Restaurant).id}.")
+
+        return response
+
     }
 
-    fun update(restaurantId: String, personId: String, restaurant: UpdateRestaurant, response: Response<Any>, result: BindingResult): Response<Any> {
+    fun update(slug: String, personId: String, restaurant: UpdateRestaurant, response: Response<Any>, result: BindingResult): Response<Any> {
         checkDataAvailability(restaurant.name, restaurant.telephone, null, result)
         ResultValidation.check(response, result)
 
-        get(restaurantId)?.let {
+        getRestaurant(slug)?.let {
             val person = legalPersonService.currentPerson(personId)
             if (it.owner.cnpj != person.get().cnpj) {
                 throw OwnerException("An id: $personId person is not related to the restaurant")
             }
 
+
             var slug: String? = it.slug
+
 
             restaurant.name?.let { new ->
                 if (new != it.name) {
@@ -67,19 +74,11 @@ class RestaurantService(val restaurantRepository: RestaurantRepository, val lega
                 }
             }
 
+
             val tagList = restaurant.foodCategory?.map { tag ->
                 tagRepository.findByName(tag) ?: throw TagNotFoundException("Tag: $tag not be exist")
-            }
+            }?.toMutableList()
 
-            if (tagList != null) {
-                it.foodCategory?.addAll(tagList)
-            }
-
-            restaurant.paymentMethods?.map { payment ->
-                if (payment != Payment.WALLET || payment != Payment.PICPAY || payment != Payment.PAG_SEGURO) {
-                        throw PaymentNotFoundException("Payment method: $payment not be exist")
-                }
-            }
 
             val update = it.copy(
                     id = it.id,
@@ -96,12 +95,13 @@ class RestaurantService(val restaurantRepository: RestaurantRepository, val lega
 
             restaurantRepository.save(update)
             response.data = mapOf("restaurant" to update)
+            logger.info("Update restaurant: ${it.id}.")
         }
 
         return response
     }
 
-    fun get(slug: String) = restaurantRepository.findBySlug(slug)
+    fun getRestaurant(slug: String) = restaurantRepository.findBySlug(slug)
 
     private fun checkDataAvailability(name: String?, telephone: String?, cnpj: String?, result: BindingResult): BindingResult {
         name?.let {

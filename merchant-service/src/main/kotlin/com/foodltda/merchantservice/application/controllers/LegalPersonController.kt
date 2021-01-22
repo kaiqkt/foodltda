@@ -29,7 +29,7 @@ class LegalPersonController(val legalPersonService: LegalPersonService) {
         val response = Response<Any>()
         val update = legalPersonService.update(personId, person, response, result)
 
-        return ResponseEntity.ok(update.data as Any)
+        return ResponseEntity.ok(update)
     }
 
     @GetMapping("/current/{personId}")
