@@ -15,9 +15,11 @@ import com.foodltda.merchantservice.resouce.repositories.RestaurantRepository
 import com.github.slugify.Slugify
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.validation.BindingResult
 import org.springframework.validation.ObjectError
+import org.springframework.web.bind.annotation.RequestParam
 import java.util.*
 
 @Service
@@ -30,6 +32,7 @@ class RestaurantService(val restaurantRepository: RestaurantRepository, val lega
     fun register(personId: String, restaurant: RestaurantRegistrationDTO, response: Response<Any>, result: BindingResult): Response<Any> {
         val owner: Owner = legalPersonService.currentPerson(personId).get().let {
             Owner(
+                    id = it.id,
                     name = it.name,
                     cnpj = it.cnpj,
                     telephone = it.cnpj
@@ -101,7 +104,29 @@ class RestaurantService(val restaurantRepository: RestaurantRepository, val lega
         return response
     }
 
+    fun getBy(tag: String?, name: String?, payment: Payment?, page: PageRequest, response: Response<Any>): Response<Any> {
+        response.data = when {
+            !tag.isNullOrBlank() -> restaurantRepository.findByFoodCategoryName(tag, page)
+            !name.isNullOrBlank() -> restaurantRepository.findByName(name, page)
+            payment != null -> restaurantRepository.findByPaymentMethods(payment, page)
+            else -> restaurantRepository.findAll(page).toList()
+        }
+        return response
+    }
+
     fun getRestaurant(slug: String) = restaurantRepository.findBySlug(slug)
+
+    fun getRestaurantByPersonId(personId: String, response: Response<Any>): Response<Any> {
+        val restaurant = restaurantRepository.findByOwnerId(personId)
+
+        if (restaurant != null) {
+            response.data = restaurantRepository.findByOwnerId(personId)
+
+            return response
+        }
+
+        throw OwnerException("Restaurant not found by person id: $personId")
+    }
 
     private fun checkDataAvailability(name: String?, telephone: String?, cnpj: String?, result: BindingResult): BindingResult {
         name?.let {
