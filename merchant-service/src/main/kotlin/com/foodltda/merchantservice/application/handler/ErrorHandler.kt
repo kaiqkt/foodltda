@@ -73,4 +73,16 @@ class ErrorHandler : ResponseEntityExceptionHandler() {
         body["message"] = ex?.message!!
         return ResponseEntity(body, HttpStatus.NOT_FOUND)
     }
+
+    @ExceptionHandler(ProductNotFoundException::class)
+    fun handleProductNotFoundException(
+            ex: ProductNotFoundException?, request: WebRequest?): ResponseEntity<Any?>? {
+        val uri: List<String>? = request?.getDescription(true)?.split(";")
+        logger.error("Product not found: ${uri?.get(0)}")
+
+        val body: MutableMap<String, Any> = LinkedHashMap()
+        body["timestamp"] = LocalDateTime.now()
+        body["message"] = ex?.message!!
+        return ResponseEntity(body, HttpStatus.NOT_FOUND)
+    }
 }

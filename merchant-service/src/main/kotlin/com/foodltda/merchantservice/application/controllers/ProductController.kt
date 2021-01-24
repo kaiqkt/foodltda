@@ -4,6 +4,7 @@ import com.foodltda.merchantservice.application.dto.request.ProductDTO
 import com.foodltda.merchantservice.application.dto.request.UpdateProduct
 import com.foodltda.merchantservice.application.dto.response.Response
 import com.foodltda.merchantservice.domain.service.ProductService
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
@@ -27,8 +28,11 @@ class ProductController(val productService: ProductService) {
 
         return ResponseEntity.ok(response)
     }
-    @GetMapping
-    fun products(){}
-    @DeleteMapping
-    fun delete(){}
+
+    @DeleteMapping("/delete/{slug}")
+    fun delete(@PathVariable slug: String): ResponseEntity<Any> {
+        productService.delete(slug)
+
+        return ResponseEntity(HttpStatus.OK)
+    }
 }

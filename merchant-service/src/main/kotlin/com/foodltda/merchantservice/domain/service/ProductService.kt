@@ -5,6 +5,7 @@ import com.foodltda.merchantservice.application.dto.request.UpdateProduct
 import com.foodltda.merchantservice.application.dto.response.Response
 import com.foodltda.merchantservice.domain.entities.Products
 import com.foodltda.merchantservice.domain.entities.Restaurant
+import com.foodltda.merchantservice.domain.exceptions.ProductNotFoundException
 import com.foodltda.merchantservice.domain.exceptions.TagNotFoundException
 import com.foodltda.merchantservice.resouce.repositories.ProductsRepository
 import com.foodltda.merchantservice.resouce.repositories.RestaurantRepository
@@ -87,5 +88,17 @@ class ProductService(val productsRepository: ProductsRepository,
         }
 
         return response
+    }
+
+    fun delete(slug: String){
+        productsRepository.findBySlug(slug)?.let {
+            restaurantRepository.findById(it.restaurantId).let {product ->
+                product.get().products.remove(slug)
+                restaurantRepository.save(product.get())
+                logger.info("Delete product: ${product.get().id}")
+                productsRepository.delete(it)
+            }
+        }.takeIf { it != null } ?: throw ProductNotFoundException("Product: $slug not found")
+
     }
 }
