@@ -1,7 +1,7 @@
 package com.foodltda.merchantservice.application.dto.request
 
-import com.foodltda.merchantservice.application.dto.Address
-import com.foodltda.merchantservice.application.dto.DeliveryTime
+import com.foodltda.merchantservice.domain.entities.Address
+import com.foodltda.merchantservice.domain.entities.DeliveryTime
 import com.foodltda.merchantservice.domain.entities.enums.Payment
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
@@ -11,7 +11,7 @@ data class RestaurantRegistrationDTO (
         val name: String = "",
         @get:NotEmpty(message = "Image cannot be empty")
         val image: String = "",
-        @get:NotNull(message = "Address cannot be empty")
+        @get:NotNull(message = "Address cannot be null")
         val address: Address?,
         @get:NotEmpty(message = "Telephone cannot be empty")
         val telephone: String = "",

@@ -1,13 +1,12 @@
 package com.foodltda.merchantservice.domain.service
 
-import com.foodltda.merchantservice.application.dto.Owner
+import com.foodltda.merchantservice.domain.entities.Owner
 import com.foodltda.merchantservice.application.dto.request.RestaurantRegistrationDTO
 import com.foodltda.merchantservice.application.dto.request.UpdateRestaurant
 import com.foodltda.merchantservice.application.dto.response.Response
 import com.foodltda.merchantservice.domain.entities.Restaurant
 import com.foodltda.merchantservice.domain.entities.enums.Payment
 import com.foodltda.merchantservice.domain.exceptions.OwnerException
-import com.foodltda.merchantservice.domain.exceptions.PaymentNotFoundException
 import com.foodltda.merchantservice.domain.exceptions.TagNotFoundException
 import com.foodltda.merchantservice.domain.validation.ResultValidation
 import com.foodltda.merchantservice.resouce.repositories.FoodCategoryRespository
@@ -19,7 +18,6 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.validation.BindingResult
 import org.springframework.validation.ObjectError
-import org.springframework.web.bind.annotation.RequestParam
 import java.util.*
 
 @Service
@@ -41,6 +39,7 @@ class RestaurantService(val restaurantRepository: RestaurantRepository, val lega
 
         checkDataAvailability(restaurant.name, restaurant.telephone, owner.cnpj, result)
         ResultValidation.check(response, result)
+
 
         val tagList = restaurant.foodCategory?.map { tag ->
             tagRepository.findByName(tag) ?: throw TagNotFoundException("Tag: $tag not be exist")

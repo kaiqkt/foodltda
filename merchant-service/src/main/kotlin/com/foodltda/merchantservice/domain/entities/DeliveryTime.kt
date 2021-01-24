@@ -1,4 +1,4 @@
-package com.foodltda.merchantservice.application.dto
+package com.foodltda.merchantservice.domain.entities
 
 
 data class DeliveryTime (

@@ -1,8 +1,5 @@
 package com.foodltda.merchantservice.domain.entities
 
-import com.foodltda.merchantservice.application.dto.Address
-import com.foodltda.merchantservice.application.dto.DeliveryTime
-import com.foodltda.merchantservice.application.dto.Owner
 import com.foodltda.merchantservice.application.dto.request.RestaurantRegistrationDTO
 import com.foodltda.merchantservice.domain.entities.enums.Payment
 import com.github.slugify.Slugify
