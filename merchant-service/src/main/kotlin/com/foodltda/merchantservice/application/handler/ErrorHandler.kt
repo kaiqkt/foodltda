@@ -59,7 +59,7 @@ class ErrorHandler : ResponseEntityExceptionHandler() {
         val body: MutableMap<String, Any> = LinkedHashMap()
         body["timestamp"] = LocalDateTime.now()
         body["message"] = ex?.message!!
-        return ResponseEntity(body, HttpStatus.FORBIDDEN)
+        return ResponseEntity(body, HttpStatus.NOT_FOUND)
     }
 
     @ExceptionHandler(PaymentNotFoundException::class)
