@@ -1,8 +1,7 @@
 package com.foodltda.merchantservice.domain.entities
 
-import com.foodltda.merchantservice.application.dto.Tag
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.foodltda.merchantservice.application.dto.request.ProductDTO
-import com.github.slugify.Slugify
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.math.BigDecimal
@@ -11,21 +10,24 @@ import java.math.BigDecimal
 data class Products (
         @Id
         val id: String? = null,
-        val slug: String?,
+        var slug: String?,
         val name: String?,
         val image: String?,
         val price: BigDecimal?,
         val description: String?,
-        val tag: Tag?
+        val tag: Tag?,
+        @JsonIgnore
+        val restaurantId: String?
 ) {
-    companion object {
-        fun fromDocument(product: ProductDTO) = Products (
+    companion object{
+        fun fromDocument(product: ProductDTO, slug: String?, id: String?, tag: Tag?) = Products (
                 name = product.name,
-                slug = Slugify().slugify(product.name),
+                slug = slug,
                 image = product.image,
                 price = product.price,
                 description = product.description,
-                tag = product.tag
+                tag = tag,
+                restaurantId = id
         )
     }
 }

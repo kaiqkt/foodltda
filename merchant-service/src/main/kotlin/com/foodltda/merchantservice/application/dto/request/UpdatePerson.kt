@@ -1,8 +1,7 @@
 package com.foodltda.merchantservice.application.dto.request
 
-import com.foodltda.merchantservice.application.dto.Address
+import com.foodltda.merchantservice.domain.entities.Address
 import javax.validation.constraints.Email
-import javax.validation.constraints.NotEmpty
 
 data class UpdatePerson(
         val name: String? = null,

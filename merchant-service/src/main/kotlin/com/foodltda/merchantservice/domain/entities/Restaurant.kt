@@ -19,7 +19,7 @@ data class Restaurant (
         val deliveryTime: MutableList<DeliveryTime> = mutableListOf(),
         val foodCategory: MutableList<FoodCategory>? = mutableListOf(),
         val paymentMethods: MutableList<Payment> = mutableListOf(),
-        val products: MutableList<Products> = mutableListOf()
+        val products: MutableList<String?> = mutableListOf()
 ) {
         companion object{
                 fun fromDocument(owner: Owner, restaurantDTO: RestaurantRegistrationDTO, tagList: MutableList<FoodCategory>?) =
