@@ -91,7 +91,7 @@ class RestaurantService(val restaurantRepository: RestaurantRepository, val lega
                     address = restaurant.address ?: it.address,
                     telephone = restaurant.telephone ?: it.telephone,
                     deliveryTime = restaurant.deliveryTime ?: it.deliveryTime,
-                    foodCategory = it.foodCategory,
+                    foodCategory = if (tagList.isNullOrEmpty()) it.foodCategory else tagList,
                     paymentMethods = restaurant.paymentMethods ?: it.paymentMethods
             )
 

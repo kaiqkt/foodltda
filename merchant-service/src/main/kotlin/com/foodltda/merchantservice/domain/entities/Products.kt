@@ -17,10 +17,10 @@ data class Products (
         val description: String?,
         val tag: Tag?,
         @JsonIgnore
-        val restaurantId: String?
+        val restaurantId: String
 ) {
     companion object{
-        fun fromDocument(product: ProductDTO, slug: String?, id: String?, tag: Tag?) = Products (
+        fun fromDocument(product: ProductDTO, slug: String?, id: String, tag: Tag?) = Products (
                 name = product.name,
                 slug = slug,
                 image = product.image,

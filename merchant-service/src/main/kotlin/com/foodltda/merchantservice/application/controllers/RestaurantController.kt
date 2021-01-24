@@ -33,6 +33,7 @@ class RestaurantController(val restaurantService: RestaurantService) {
         return ResponseEntity.ok(response)
     }
 
+    //alterar
     @GetMapping("/current/{personId}")
     fun current(@PathVariable personId: String): ResponseEntity<Any> {
         val response =  Response<Any>()
@@ -41,6 +42,7 @@ class RestaurantController(val restaurantService: RestaurantService) {
         return ResponseEntity.ok(response)
     }
 
+    //alterar
     @GetMapping("/filter")
     fun filter(@RequestParam(defaultValue = "20") limit: Int,
                  @RequestParam(defaultValue = "0") offset: Int,
