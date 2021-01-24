@@ -85,9 +85,11 @@ class ProductService(val productsRepository: ProductsRepository,
             restaurantRepository.save(restaurant.get())
             response.data = productsRepository.save(update)
             logger.info("Update product: ${it.id}")
+
+            return response
         }
 
-        return response
+       throw ProductNotFoundException("Product: $slug dont be exist")
     }
 
     fun delete(slug: String){
