@@ -6,6 +6,7 @@ import com.foodltda.merchantservice.application.dto.response.Response
 import com.foodltda.merchantservice.domain.entities.Restaurant
 import com.foodltda.merchantservice.domain.entities.enums.Payment
 import com.foodltda.merchantservice.domain.exceptions.OwnerException
+import com.foodltda.merchantservice.domain.exceptions.RestaurantNotFoundException
 import com.foodltda.merchantservice.domain.exceptions.TagNotFoundException
 import com.foodltda.merchantservice.domain.validation.ResultValidation
 import com.foodltda.merchantservice.resouce.repositories.FoodCategoryRespository
@@ -88,14 +89,16 @@ class RestaurantService(val restaurantRepository: RestaurantRepository, val lega
             restaurantRepository.save(update)
             response.data = mapOf("restaurant" to update)
             logger.info("Update restaurant: ${it.id}.")
+
+            return response
         }
 
-        return response
+        throw RestaurantNotFoundException("Restaurant: $slug not be exist")
     }
 
     fun getBy(tag: String?, name: String?, payment: Payment?, page: PageRequest, response: Response<Any>): Response<Any> {
         response.data = when {
-            !tag.isNullOrBlank() -> restaurantRepository.findByFoodCategoryName(tag, page)
+            !tag.isNullOrBlank() -> restaurantRepository.findByFoodCategoryName(tag, page).stream()
             !name.isNullOrBlank() -> restaurantRepository.findByName(name, page)
             payment != null -> restaurantRepository.findByPaymentMethods(payment, page)
             else -> restaurantRepository.findAll(page).toList()
@@ -103,7 +106,7 @@ class RestaurantService(val restaurantRepository: RestaurantRepository, val lega
         return response
     }
 
-    fun getRestaurant(slug: String) = restaurantRepository.findBySlug(slug)
+    fun getRestaurant(slug: String): Restaurant? = restaurantRepository.findBySlug(slug)
 
     fun getRestaurantByPersonId(personId: String, response: Response<Any>): Response<Any> {
         val restaurant = restaurantRepository.findByLegalPersonId(personId)
