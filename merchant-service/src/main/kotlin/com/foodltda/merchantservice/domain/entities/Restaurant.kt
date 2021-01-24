@@ -12,7 +12,7 @@ data class Restaurant (
         val id: String? = null,
         val slug: String? = null,
         val name: String,
-        val owner: Owner,
+        val legalPersonId: String,
         val image: String,
         val address: Address?,
         val telephone: String? = null,
@@ -22,9 +22,9 @@ data class Restaurant (
         val products: MutableList<String?> = mutableListOf()
 ) {
         companion object{
-                fun fromDocument(owner: Owner, restaurantDTO: RestaurantRegistrationDTO, tagList: MutableList<FoodCategory>?) =
+                fun fromDocument(legalPersonId: String, restaurantDTO: RestaurantRegistrationDTO, tagList: MutableList<FoodCategory>?) =
                         Restaurant(
-                                owner = owner,
+                                legalPersonId = legalPersonId,
                                 slug = Slugify().slugify(restaurantDTO.name),
                                 name = restaurantDTO.name,
                                 image = restaurantDTO.image,

@@ -1,6 +1,5 @@
 package com.foodltda.merchantservice.domain.service
 
-import com.foodltda.merchantservice.domain.entities.Owner
 import com.foodltda.merchantservice.application.dto.request.RestaurantRegistrationDTO
 import com.foodltda.merchantservice.application.dto.request.UpdateRestaurant
 import com.foodltda.merchantservice.application.dto.response.Response
@@ -28,16 +27,7 @@ class RestaurantService(val restaurantRepository: RestaurantRepository, val lega
     }
 
     fun register(personId: String, restaurant: RestaurantRegistrationDTO, response: Response<Any>, result: BindingResult): Response<Any> {
-        val owner: Owner = legalPersonService.currentPerson(personId).get().let {
-            Owner(
-                    id = it.id,
-                    name = it.name,
-                    cnpj = it.cnpj,
-                    telephone = it.cnpj
-            )
-        }
-
-        checkDataAvailability(restaurant.name, restaurant.telephone, owner.cnpj, result)
+        checkDataAvailability(restaurant.name, restaurant.telephone, personId, result)
         ResultValidation.check(response, result)
 
 
@@ -45,7 +35,7 @@ class RestaurantService(val restaurantRepository: RestaurantRepository, val lega
             tagRepository.findByName(tag) ?: throw TagNotFoundException("Tag: $tag not be exist")
         }?.toMutableList()
 
-        response.data = restaurantRepository.save(Restaurant.fromDocument(owner, restaurant, tagList))
+        response.data = restaurantRepository.save(Restaurant.fromDocument(personId, restaurant, tagList))
 
         logger.info("Save new restaurant: ${(response.data as Restaurant).id}.")
 
@@ -59,7 +49,7 @@ class RestaurantService(val restaurantRepository: RestaurantRepository, val lega
 
         getRestaurant(slug)?.let {
             val person = legalPersonService.currentPerson(personId)
-            if (it.owner.cnpj != person.get().cnpj) {
+            if (it.legalPersonId != person.get().id) {
                 throw OwnerException("An id: $personId person is not related to the restaurant")
             }
 
@@ -86,7 +76,7 @@ class RestaurantService(val restaurantRepository: RestaurantRepository, val lega
                     id = it.id,
                     slug = slug,
                     name = restaurant.name ?: it.name,
-                    owner = it.owner,
+                    legalPersonId = it.legalPersonId,
                     image = restaurant.image ?: it.image,
                     address = restaurant.address ?: it.address,
                     telephone = restaurant.telephone ?: it.telephone,
@@ -116,10 +106,10 @@ class RestaurantService(val restaurantRepository: RestaurantRepository, val lega
     fun getRestaurant(slug: String) = restaurantRepository.findBySlug(slug)
 
     fun getRestaurantByPersonId(personId: String, response: Response<Any>): Response<Any> {
-        val restaurant = restaurantRepository.findByOwnerId(personId)
+        val restaurant = restaurantRepository.findByLegalPersonId(personId)
 
         if (restaurant != null) {
-            response.data = restaurantRepository.findByOwnerId(personId)
+            response.data = restaurant
 
             return response
         }
@@ -127,7 +117,7 @@ class RestaurantService(val restaurantRepository: RestaurantRepository, val lega
         throw OwnerException("Restaurant not found by person id: $personId")
     }
 
-    private fun checkDataAvailability(name: String?, telephone: String?, cnpj: String?, result: BindingResult): BindingResult {
+    private fun checkDataAvailability(name: String?, telephone: String?, legalPersonId: String?, result: BindingResult): BindingResult {
         name?.let {
             if (restaurantRepository.existsByName(it)) {
                 result.addError(ObjectError("restaurant", "Restaurant name $name already use.")).let { log ->
@@ -145,9 +135,9 @@ class RestaurantService(val restaurantRepository: RestaurantRepository, val lega
             }
         }
 
-        cnpj?.let {
-            if (restaurantRepository.existsByOwnerCnpj(it)) {
-                result.addError(ObjectError("restaurant", "CNPJ: $cnpj already use.")).let { log ->
+        legalPersonId?.let {
+            if (restaurantRepository.existsByLegalPersonId(it)) {
+                result.addError(ObjectError("restaurant", "Legal person id: $legalPersonId already use.")).let { log ->
                     logger.error(log.toString())
                 }
                 return result
