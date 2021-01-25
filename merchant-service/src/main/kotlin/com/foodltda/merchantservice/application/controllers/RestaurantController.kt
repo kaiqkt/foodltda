@@ -42,6 +42,14 @@ class RestaurantController(val restaurantService: RestaurantService) {
         return ResponseEntity.ok(response)
     }
 
+    @GetMapping("/get/{slug}")
+    fun getRestaurant(@PathVariable slug: String): ResponseEntity<Any> {
+        val response =  Response<Any>()
+        restaurantService.get(slug, response)
+
+        return ResponseEntity.ok(response)
+    }
+
     //alterar
     @GetMapping("/filter")
     fun filter(@RequestParam(defaultValue = "20") limit: Int,

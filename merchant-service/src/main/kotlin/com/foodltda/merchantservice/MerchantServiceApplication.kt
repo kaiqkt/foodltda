@@ -1,7 +1,13 @@
 package com.foodltda.merchantservice
 
+import com.foodltda.merchantservice.domain.entities.*
+import com.foodltda.merchantservice.domain.entities.enums.Payment
+import com.foodltda.merchantservice.resouce.repositories.*
+import com.github.slugify.Slugify
+import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import java.time.DayOfWeek
 import java.time.LocalTime
 
 @SpringBootApplication
@@ -159,7 +165,7 @@ class MerchantServiceApplication
 //                        ),
 //                        telephone = "080056851",
 //                        deliveryTime = time,
-//                        foodCategory = mutableListOf(foodCategory1),
+//                        foodCategory = foodCategory1,
 //                        paymentMethods = mutableListOf(Payment.PAG_SEGURO, Payment.PICPAY)
 //                )
 //
@@ -182,7 +188,7 @@ class MerchantServiceApplication
 //                    ),
 //                    telephone = "080056852",
 //                    deliveryTime = time,
-//                    foodCategory = mutableListOf(foodCategory1),
+//                    foodCategory = foodCategory1,
 //                    paymentMethods = mutableListOf(Payment.PAG_SEGURO, Payment.WALLET)
 //            )
 //
@@ -205,7 +211,7 @@ class MerchantServiceApplication
 //                    ),
 //                    telephone = "080056853",
 //                    deliveryTime = time,
-//                    foodCategory = mutableListOf(foodCategory1),
+//                    foodCategory = foodCategory1,
 //                    paymentMethods = mutableListOf(Payment.WALLET)
 //            )
 //

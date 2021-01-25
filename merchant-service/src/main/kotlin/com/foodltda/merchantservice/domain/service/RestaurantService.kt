@@ -3,6 +3,7 @@ package com.foodltda.merchantservice.domain.service
 import com.foodltda.merchantservice.application.dto.request.RestaurantRegistrationDTO
 import com.foodltda.merchantservice.application.dto.request.UpdateRestaurant
 import com.foodltda.merchantservice.application.dto.response.OpeningHours
+import com.foodltda.merchantservice.application.dto.response.ProductDTO
 import com.foodltda.merchantservice.application.dto.response.Response
 import com.foodltda.merchantservice.application.dto.response.RestaurantDTO
 import com.foodltda.merchantservice.domain.entities.DeliveryTime
@@ -40,11 +41,11 @@ class RestaurantService(val restaurantRepository: RestaurantRepository, val lega
         ResultValidation.check(response, result)
 
 
-        val tagList = restaurant.foodCategory?.map { tag ->
+        val tag = restaurant.foodCategory?.let { tag ->
             tagRepository.findByName(tag) ?: throw TagNotFoundException("Tag: $tag not be exist")
-        }?.toMutableList()
+        }
 
-        response.data = restaurantRepository.save(Restaurant.fromDocument(personId, restaurant, tagList))
+        response.data = restaurantRepository.save(Restaurant.fromDocument(personId, restaurant, tag))
 
         logger.info("Save new restaurant: ${(response.data as Restaurant).id}.")
 
@@ -76,9 +77,9 @@ class RestaurantService(val restaurantRepository: RestaurantRepository, val lega
             }
 
 
-            val tagList = restaurant.foodCategory?.map { tag ->
+            val tag = restaurant.foodCategory?.let { tag ->
                 tagRepository.findByName(tag) ?: throw TagNotFoundException("Tag: $tag not be exist")
-            }?.toMutableList()
+            }
 
 
             val update = it.copy(
@@ -90,7 +91,7 @@ class RestaurantService(val restaurantRepository: RestaurantRepository, val lega
                     address = restaurant.address ?: it.address,
                     telephone = restaurant.telephone ?: it.telephone,
                     deliveryTime = restaurant.deliveryTime ?: it.deliveryTime,
-                    foodCategory = if (tagList.isNullOrEmpty()) it.foodCategory else tagList,
+                    foodCategory = tag ?: it.foodCategory,
                     paymentMethods = restaurant.paymentMethods ?: it.paymentMethods
             )
 
@@ -116,10 +117,11 @@ class RestaurantService(val restaurantRepository: RestaurantRepository, val lega
         val close: MutableList<RestaurantDTO> = arrayListOf()
 
         restaurants.map {res ->
-            if (openingHours(res.deliveryTime)) {
-                open.add(RestaurantDTO(res, OpeningHours.OPEN))
+            val h = openingHours(res.deliveryTime)
+            if (h.first) {
+                open.add(RestaurantDTO(id = res.id, name = res.name, slug = res.slug, image = res.image, time = h.second, openingHours = OpeningHours.OPEN))
             } else {
-                close.add(RestaurantDTO(res, OpeningHours.CLOSED))
+                close.add(RestaurantDTO(id = res.id, name = res.name,  slug = res.slug, image = res.image, time = h.second, openingHours = OpeningHours.CLOSED))
             }
         }
         open.addAll(close)
@@ -129,16 +131,17 @@ class RestaurantService(val restaurantRepository: RestaurantRepository, val lega
         return response
     }
 
-    fun openingHours(time: MutableList<DeliveryTime>): Boolean {
+    fun openingHours(time: MutableList<DeliveryTime>): Pair<Boolean, DeliveryTime?> {
         time.map {
             if (LocalDate.now().dayOfWeek == it.dayOfWeek) {
                 if (LocalTime.now().isBefore(LocalTime.parse(it.closeThe)) && LocalTime.now().isAfter(LocalTime.parse(it.openThe))) {
-                    return true
+                    return Pair(true, it)
                 }
+                return Pair(false, it)
             }
         }
-        return false
 
+        return Pair(false, null)
     }
 
     fun getRestaurant(slug: String): Restaurant? = restaurantRepository.findBySlug(slug)
@@ -153,6 +156,18 @@ class RestaurantService(val restaurantRepository: RestaurantRepository, val lega
         }
 
         throw OwnerException("Restaurant not found by person id: $personId")
+    }
+
+    fun get(slug: String, response: Response<Any>): Response<Any> {
+        val restaurant = restaurantRepository.findBySlug(slug)
+
+        if (restaurant != null) {
+            response.data = restaurant
+
+            return response
+        }
+
+        throw RestaurantNotFoundException("Restaurant not found by slug: $slug")
     }
 
     private fun checkDataAvailability(name: String?, telephone: String?, legalPersonId: String?, result: BindingResult): BindingResult {

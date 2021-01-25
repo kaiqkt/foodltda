@@ -18,7 +18,7 @@ data class RestaurantRegistrationDTO (
         @get:NotEmpty(message = "Delivery time cannot be empty")
         val deliveryTime: MutableList<DeliveryTime> = mutableListOf(),
         @get:NotEmpty(message = "Food category cannot be empty")
-        val foodCategory: MutableList<String>? = mutableListOf(),
+        val foodCategory: String? = "",
         @get:NotEmpty(message = "Payment methods cannot be empty")
         val paymentMethods: MutableList<Payment> = mutableListOf()
 )

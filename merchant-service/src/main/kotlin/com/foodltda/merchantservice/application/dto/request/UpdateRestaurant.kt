@@ -10,6 +10,6 @@ data class UpdateRestaurant (
         val address: Address? = null,
         val telephone: String? = null,
         val deliveryTime: MutableList<DeliveryTime>? = null,
-        val foodCategory: MutableList<String>? = null,
+        val foodCategory: String? = null,
         val paymentMethods: MutableList<Payment>? = null
 )
