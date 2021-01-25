@@ -3,9 +3,9 @@ package com.foodltda.merchantservice.domain.service
 import com.foodltda.merchantservice.application.dto.request.RestaurantRegistrationDTO
 import com.foodltda.merchantservice.application.dto.request.UpdateRestaurant
 import com.foodltda.merchantservice.application.dto.response.OpeningHours
-import com.foodltda.merchantservice.application.dto.response.ProductDTO
 import com.foodltda.merchantservice.application.dto.response.Response
 import com.foodltda.merchantservice.application.dto.response.RestaurantDTO
+import com.foodltda.merchantservice.application.dto.response.RestaurantsDTO
 import com.foodltda.merchantservice.domain.entities.DeliveryTime
 import com.foodltda.merchantservice.domain.entities.Restaurant
 import com.foodltda.merchantservice.domain.entities.enums.Payment
@@ -23,11 +23,8 @@ import org.springframework.stereotype.Service
 import org.springframework.validation.BindingResult
 import org.springframework.validation.ObjectError
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 import java.util.*
-import java.util.zip.DataFormatException
 
 @Service
 class RestaurantService(val restaurantRepository: RestaurantRepository, val legalPersonService: LegalPersonService, val tagRepository: FoodCategoryRepository) {
@@ -113,15 +110,15 @@ class RestaurantService(val restaurantRepository: RestaurantRepository, val lega
             else -> restaurantRepository.findAll(page).toList()
         }
 
-        val open: MutableList<RestaurantDTO> = arrayListOf()
-        val close: MutableList<RestaurantDTO> = arrayListOf()
+        val open: MutableList<RestaurantsDTO> = arrayListOf()
+        val close: MutableList<RestaurantsDTO> = arrayListOf()
 
         restaurants.map {res ->
             val h = openingHours(res.deliveryTime)
             if (h.first) {
-                open.add(RestaurantDTO(id = res.id, name = res.name, slug = res.slug, image = res.image, time = h.second, openingHours = OpeningHours.OPEN))
+                open.add(RestaurantsDTO(id = res.id, name = res.name, slug = res.slug, image = res.image, time = h.second, openingHours = OpeningHours.OPEN))
             } else {
-                close.add(RestaurantDTO(id = res.id, name = res.name,  slug = res.slug, image = res.image, time = h.second, openingHours = OpeningHours.CLOSED))
+                close.add(RestaurantsDTO(id = res.id, name = res.name,  slug = res.slug, image = res.image, time = h.second, openingHours = OpeningHours.CLOSED))
             }
         }
         open.addAll(close)
@@ -162,7 +159,12 @@ class RestaurantService(val restaurantRepository: RestaurantRepository, val lega
         val restaurant = restaurantRepository.findBySlug(slug)
 
         if (restaurant != null) {
-            response.data = restaurant
+            val h = openingHours(restaurant.deliveryTime)
+            if (h.first) {
+                response.data = RestaurantDTO(restaurant, OpeningHours.OPEN)
+            } else {
+                response.data = RestaurantDTO(restaurant, OpeningHours.CLOSED)
+            }
 
             return response
         }

@@ -13,6 +13,7 @@ data class Restaurant (
         val id: String? = null,
         val slug: String? = null,
         val name: String,
+        @JsonIgnore
         val legalPersonId: String?,
         val image: String,
         val address: Address?,
