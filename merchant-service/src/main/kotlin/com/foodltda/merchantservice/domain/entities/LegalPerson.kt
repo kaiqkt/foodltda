@@ -6,20 +6,20 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
 @Document
-data class LegalPerson (
+data class LegalPerson(
         @Id
-    val id: String? = null,
+        val id: String? = null,
         val name: String?,
         val email: String?,
         val cnpj: String?,
         val address: Address?,
         @JsonIgnore
-    val password: String?,
+        val password: String?,
         val telephone: String?,
 ) {
     companion object {
         fun fromDocument(person: PersonRegistrationDTO) =
-                LegalPerson (
+                LegalPerson(
                         name = person.name,
                         email = person.email,
                         address = person.address,

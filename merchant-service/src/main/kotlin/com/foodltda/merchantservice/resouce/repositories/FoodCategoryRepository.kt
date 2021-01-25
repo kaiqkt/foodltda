@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface FoodCategoryRespository: MongoRepository<FoodCategory, String> {
+interface FoodCategoryRepository: MongoRepository<FoodCategory, String> {
     fun existsByName(name: String): Boolean
     fun findByName(name: String): FoodCategory?
 }

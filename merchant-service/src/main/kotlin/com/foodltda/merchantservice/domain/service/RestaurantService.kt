@@ -2,14 +2,17 @@ package com.foodltda.merchantservice.domain.service
 
 import com.foodltda.merchantservice.application.dto.request.RestaurantRegistrationDTO
 import com.foodltda.merchantservice.application.dto.request.UpdateRestaurant
+import com.foodltda.merchantservice.application.dto.response.OpeningHours
 import com.foodltda.merchantservice.application.dto.response.Response
+import com.foodltda.merchantservice.application.dto.response.RestaurantDTO
+import com.foodltda.merchantservice.domain.entities.DeliveryTime
 import com.foodltda.merchantservice.domain.entities.Restaurant
 import com.foodltda.merchantservice.domain.entities.enums.Payment
 import com.foodltda.merchantservice.domain.exceptions.OwnerException
 import com.foodltda.merchantservice.domain.exceptions.RestaurantNotFoundException
 import com.foodltda.merchantservice.domain.exceptions.TagNotFoundException
 import com.foodltda.merchantservice.domain.validation.ResultValidation
-import com.foodltda.merchantservice.resouce.repositories.FoodCategoryRespository
+import com.foodltda.merchantservice.resouce.repositories.FoodCategoryRepository
 import com.foodltda.merchantservice.resouce.repositories.RestaurantRepository
 import com.github.slugify.Slugify
 import org.slf4j.Logger
@@ -18,10 +21,15 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.validation.BindingResult
 import org.springframework.validation.ObjectError
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import java.util.*
+import java.util.zip.DataFormatException
 
 @Service
-class RestaurantService(val restaurantRepository: RestaurantRepository, val legalPersonService: LegalPersonService, val tagRepository: FoodCategoryRespository) {
+class RestaurantService(val restaurantRepository: RestaurantRepository, val legalPersonService: LegalPersonService, val tagRepository: FoodCategoryRepository) {
 
     companion object {
         val logger: Logger = LoggerFactory.getLogger(RestaurantService::class.java.name)
@@ -97,13 +105,40 @@ class RestaurantService(val restaurantRepository: RestaurantRepository, val lega
     }
 
     fun getBy(tag: String?, name: String?, payment: Payment?, page: PageRequest, response: Response<Any>): Response<Any> {
-        response.data = when {
-            !tag.isNullOrBlank() -> restaurantRepository.findByFoodCategoryName(tag, page).stream()
+        val restaurants = when {
+            !tag.isNullOrBlank() -> restaurantRepository.findByFoodCategoryName(tag, page)
             !name.isNullOrBlank() -> restaurantRepository.findByName(name, page)
             payment != null -> restaurantRepository.findByPaymentMethods(payment, page)
             else -> restaurantRepository.findAll(page).toList()
         }
+
+        val open: MutableList<RestaurantDTO> = arrayListOf()
+        val close: MutableList<RestaurantDTO> = arrayListOf()
+
+        restaurants.map {res ->
+            if (openingHours(res.deliveryTime)) {
+                open.add(RestaurantDTO(res, OpeningHours.OPEN))
+            } else {
+                close.add(RestaurantDTO(res, OpeningHours.CLOSED))
+            }
+        }
+        open.addAll(close)
+
+        response.data = open
+
         return response
+    }
+
+    fun openingHours(time: MutableList<DeliveryTime>): Boolean {
+        time.map {
+            if (LocalDate.now().dayOfWeek == it.dayOfWeek) {
+                if (LocalTime.now().isBefore(LocalTime.parse(it.closeThe)) && LocalTime.now().isAfter(LocalTime.parse(it.openThe))) {
+                    return true
+                }
+            }
+        }
+        return false
+
     }
 
     fun getRestaurant(slug: String): Restaurant? = restaurantRepository.findBySlug(slug)

@@ -1,5 +1,6 @@
 package com.foodltda.merchantservice.domain.entities
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.foodltda.merchantservice.application.dto.request.RestaurantRegistrationDTO
 import com.foodltda.merchantservice.domain.entities.enums.Payment
 import com.github.slugify.Slugify
@@ -12,10 +13,11 @@ data class Restaurant (
         val id: String? = null,
         val slug: String? = null,
         val name: String,
-        val legalPersonId: String,
+        val legalPersonId: String?,
         val image: String,
         val address: Address?,
         val telephone: String? = null,
+        @JsonIgnore
         val deliveryTime: MutableList<DeliveryTime> = mutableListOf(),
         val foodCategory: MutableList<FoodCategory>? = mutableListOf(),
         val paymentMethods: MutableList<Payment> = mutableListOf(),
