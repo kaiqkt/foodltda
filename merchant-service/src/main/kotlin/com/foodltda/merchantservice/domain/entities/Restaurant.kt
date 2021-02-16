@@ -20,12 +20,12 @@ data class Restaurant (
         val telephone: String? = null,
         @JsonIgnore
         val deliveryTime: MutableList<DeliveryTime> = mutableListOf(),
-        val foodCategory: FoodCategory? = null,
+        val restaurantCategory: RestaurantCategory? = null,
         val paymentMethods: MutableList<Payment> = mutableListOf(),
         val products: MutableList<String?> = mutableListOf()
 ) {
         companion object{
-                fun fromDocument(legalPersonId: String, restaurantDTO: RestaurantRegistrationDTO, tag: FoodCategory?) =
+                fun fromDocument(legalPersonId: String, restaurantDTO: RestaurantRegistrationDTO, tag: RestaurantCategory?) =
                         Restaurant(
                                 legalPersonId = legalPersonId,
                                 slug = Slugify().slugify(restaurantDTO.name),
@@ -34,7 +34,7 @@ data class Restaurant (
                                 address = restaurantDTO.address,
                                 telephone = restaurantDTO.telephone,
                                 deliveryTime = restaurantDTO.deliveryTime,
-                                foodCategory = tag,
+                                restaurantCategory = tag,
                                 paymentMethods = restaurantDTO.paymentMethods
                         )
         }

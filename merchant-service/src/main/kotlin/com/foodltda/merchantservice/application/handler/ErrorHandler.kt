@@ -97,4 +97,16 @@ class ErrorHandler : ResponseEntityExceptionHandler() {
         body["message"] = ex?.message!!
         return ResponseEntity(body, HttpStatus.NOT_FOUND)
     }
+
+    @ExceptionHandler(ProductAlreadyExistException::class)
+    fun handleProductAlreadyExistException(
+        ex: RestaurantNotFoundException?, request: WebRequest?): ResponseEntity<Any?>? {
+        val uri: List<String>? = request?.getDescription(true)?.split(";")
+        logger.error("Tag: ${uri?.get(0)}  cannot be deleted while in use")
+
+        val body: MutableMap<String, Any> = LinkedHashMap()
+        body["timestamp"] = LocalDateTime.now()
+        body["message"] = ex?.message!!
+        return ResponseEntity(body, HttpStatus.BAD_REQUEST)
+    }
 }

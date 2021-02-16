@@ -7,10 +7,12 @@ import com.github.slugify.Slugify
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient
 import java.time.DayOfWeek
 import java.time.LocalTime
 
 @SpringBootApplication
+@EnableDiscoveryClient
 class MerchantServiceApplication
 //        val legalPersonRepository: LegalPersonRepository,
 //        val loginPersonRepository: LoginPersonRepository,
@@ -21,7 +23,7 @@ class MerchantServiceApplication
 //) : CommandLineRunner {
 //    override fun run(vararg args: String?) {
 //        val legalPerson = LegalPerson(
-//				id = "1",
+//                id = "1",
 //                name = "Kaique",
 //                email = "kaique@email.com",
 //                cnpj = "91251373000190",
@@ -40,7 +42,7 @@ class MerchantServiceApplication
 //        )
 //
 //        val legalPerson2 = LegalPerson(
-//				id = "2",
+//                id = "2",
 //                name = "Henrique",
 //                email = "Henrique@email.com",
 //                cnpj = "91251373000180",
@@ -59,7 +61,7 @@ class MerchantServiceApplication
 //        )
 //
 //        val legalPerson3 = LegalPerson(
-//				id = "3",
+//                id = "3",
 //                name = "Gabriel",
 //                email = "Gabriel@email.com",
 //                cnpj = "91251373000170",
@@ -144,9 +146,6 @@ class MerchantServiceApplication
 //        time.add(d3)
 //        time.add(d4)
 //
-////		2021-01-24T23:33:52.217235
-//
-//
 //        val restaurant =
 //                Restaurant(
 //                        name = "Sushi Abc Delivery",
@@ -171,49 +170,49 @@ class MerchantServiceApplication
 //
 //
 //        val restaurant2 =
-//            Restaurant(
-//                    name = "Acai da Vila",
-//                    slug = Slugify().slugify("Acai da Vila"),
-//                    legalPersonId = "2",
-//                    image = "45454545446",
-//                    address = Address(
-//                            street = "Rua pinto coelho ",
-//                            number = "90",
-//                            complement = "casa 3",
-//                            district = "Vila Almeida",
-//                            city = "Santo Andre",
-//                            state = "SP",
-//                            country = "Brasil",
-//                            postalCode = "08152-060"
-//                    ),
-//                    telephone = "080056852",
-//                    deliveryTime = time,
-//                    foodCategory = foodCategory1,
-//                    paymentMethods = mutableListOf(Payment.PAG_SEGURO, Payment.WALLET)
-//            )
+//                Restaurant(
+//                        name = "Acai da Vila",
+//                        slug = Slugify().slugify("Acai da Vila"),
+//                        legalPersonId = "2",
+//                        image = "45454545446",
+//                        address = Address(
+//                                street = "Rua pinto coelho ",
+//                                number = "90",
+//                                complement = "casa 3",
+//                                district = "Vila Almeida",
+//                                city = "Santo Andre",
+//                                state = "SP",
+//                                country = "Brasil",
+//                                postalCode = "08152-060"
+//                        ),
+//                        telephone = "080056852",
+//                        deliveryTime = time,
+//                        foodCategory = foodCategory1,
+//                        paymentMethods = mutableListOf(Payment.PAG_SEGURO, Payment.WALLET)
+//                )
 //
 //
 //        val restaurant3 =
-//            Restaurant(
-//                    name = "Churrasco do pedro",
-//                    slug = Slugify().slugify("Churrasco do pedro"),
-//                    legalPersonId = "3",
-//                    image = "45454545446",
-//                    address = Address(
-//                            street = "Rua pinto coelho ",
-//                            number = "90",
-//                            complement = "casa 3",
-//                            district = "Vila Almeida",
-//                            city = "Santo Andre",
-//                            state = "SP",
-//                            country = "Brasil",
-//                            postalCode = "08152-060"
-//                    ),
-//                    telephone = "080056853",
-//                    deliveryTime = time,
-//                    foodCategory = foodCategory1,
-//                    paymentMethods = mutableListOf(Payment.WALLET)
-//            )
+//                Restaurant(
+//                        name = "Churrasco do pedro",
+//                        slug = Slugify().slugify("Churrasco do pedro"),
+//                        legalPersonId = "3",
+//                        image = "45454545446",
+//                        address = Address(
+//                                street = "Rua pinto coelho ",
+//                                number = "90",
+//                                complement = "casa 3",
+//                                district = "Vila Almeida",
+//                                city = "Santo Andre",
+//                                state = "SP",
+//                                country = "Brasil",
+//                                postalCode = "08152-060"
+//                        ),
+//                        telephone = "080056853",
+//                        deliveryTime = time,
+//                        foodCategory = foodCategory1,
+//                        paymentMethods = mutableListOf(Payment.WALLET)
+//                )
 //
 //
 //        restaurantRepository.save(restaurant)

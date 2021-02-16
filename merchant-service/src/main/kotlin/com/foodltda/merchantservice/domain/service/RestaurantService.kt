@@ -13,7 +13,7 @@ import com.foodltda.merchantservice.domain.exceptions.OwnerException
 import com.foodltda.merchantservice.domain.exceptions.RestaurantNotFoundException
 import com.foodltda.merchantservice.domain.exceptions.TagNotFoundException
 import com.foodltda.merchantservice.domain.validation.ResultValidation
-import com.foodltda.merchantservice.resouce.repositories.FoodCategoryRepository
+import com.foodltda.merchantservice.resouce.repositories.RestaurantCategoryRepository
 import com.foodltda.merchantservice.resouce.repositories.RestaurantRepository
 import com.github.slugify.Slugify
 import org.slf4j.Logger
@@ -27,7 +27,7 @@ import java.time.LocalTime
 import java.util.*
 
 @Service
-class RestaurantService(val restaurantRepository: RestaurantRepository, val legalPersonService: LegalPersonService, val tagRepository: FoodCategoryRepository) {
+class RestaurantService(val restaurantRepository: RestaurantRepository, val legalPersonService: LegalPersonService, val restaurantCategoryRepository: RestaurantCategoryRepository) {
 
     companion object {
         val logger: Logger = LoggerFactory.getLogger(RestaurantService::class.java.name)
@@ -38,8 +38,8 @@ class RestaurantService(val restaurantRepository: RestaurantRepository, val lega
         ResultValidation.check(response, result)
 
 
-        val tag = restaurant.foodCategory?.let { tag ->
-            tagRepository.findByName(tag) ?: throw TagNotFoundException("Tag: $tag not be exist")
+        val tag = restaurant.restaurantCategory?.let { tag ->
+            restaurantCategoryRepository.findByName(tag) ?: throw TagNotFoundException("Tag: $tag not be exist")
         }
 
         response.data = restaurantRepository.save(Restaurant.fromDocument(personId, restaurant, tag))
@@ -75,7 +75,7 @@ class RestaurantService(val restaurantRepository: RestaurantRepository, val lega
 
 
             val tag = restaurant.foodCategory?.let { tag ->
-                tagRepository.findByName(tag) ?: throw TagNotFoundException("Tag: $tag not be exist")
+                restaurantCategoryRepository.findByName(tag) ?: throw TagNotFoundException("Tag: $tag not be exist")
             }
 
 
@@ -88,7 +88,7 @@ class RestaurantService(val restaurantRepository: RestaurantRepository, val lega
                     address = restaurant.address ?: it.address,
                     telephone = restaurant.telephone ?: it.telephone,
                     deliveryTime = restaurant.deliveryTime ?: it.deliveryTime,
-                    foodCategory = tag ?: it.foodCategory,
+                    restaurantCategory = tag ?: it.restaurantCategory,
                     paymentMethods = restaurant.paymentMethods ?: it.paymentMethods
             )
 

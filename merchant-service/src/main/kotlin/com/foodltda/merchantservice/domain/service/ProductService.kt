@@ -16,13 +16,12 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.validation.BindingResult
 import java.util.*
-import kotlin.math.log
 
 @Service
 class ProductService(val productsRepository: ProductsRepository,
                      val restaurantRepository: RestaurantRepository,
-                     val restaurantService: RestaurantService,
-                     val tagRepository: TagRepository) {
+                     val tagService: TagService,
+                     val restaurantService: RestaurantService) {
 
     companion object {
         val logger: Logger = LoggerFactory.getLogger(ProductService::class.java.name)
@@ -38,14 +37,16 @@ class ProductService(val productsRepository: ProductsRepository,
         }
 
         val tag = productDTO.tag.let {
-            tagRepository.findByName(it) ?: throw TagNotFoundException("Tag: $it not be exist")
+            tagService.find(it, restaurant.id) ?: throw TagNotFoundException("Tag: $it not be exist")
         }
 
         restaurant.id?.let { Products.fromDocument(productDTO, slug, it, tag) }?.let {product ->
             productsRepository.save(product).let {
                 restaurant.products.add(it.slug)
                 restaurantRepository.save(restaurant)
+
                 logger.info("Create product: ${it.id}")
+
                 response.data = it
             }
         }
@@ -77,7 +78,7 @@ class ProductService(val productsRepository: ProductsRepository,
                     price = product.price ?: it.price,
                     description = product.description ?: it.description,
                     tag = product.tag?.let { tag ->
-                        tagRepository.findByName(tag) ?: throw TagNotFoundException("Tag: $it not be exist")
+                        tagService.find(tag, it.restaurantId) ?: throw TagNotFoundException("Tag: $it not be exist")
                     } ?: it.tag
             )
 
@@ -89,7 +90,7 @@ class ProductService(val productsRepository: ProductsRepository,
             return response
         }
 
-       throw ProductNotFoundException("Product: $slug dont be exist")
+       throw ProductNotFoundException("Product: $slug don`t be exist")
     }
 
     fun delete(slug: String){
@@ -101,6 +102,5 @@ class ProductService(val productsRepository: ProductsRepository,
                 productsRepository.delete(it)
             }
         }.takeIf { it != null } ?: throw ProductNotFoundException("Product: $slug not found")
-
     }
 }
