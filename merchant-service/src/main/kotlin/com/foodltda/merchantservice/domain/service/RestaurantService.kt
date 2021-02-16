@@ -104,7 +104,7 @@ class RestaurantService(val restaurantRepository: RestaurantRepository, val lega
 
     fun getBy(tag: String?, name: String?, payment: Payment?, page: PageRequest, response: Response<Any>): Response<Any> {
         val restaurants = when {
-            !tag.isNullOrBlank() -> restaurantRepository.findByFoodCategoryName(tag, page)
+            !tag.isNullOrBlank() -> restaurantRepository.findByRestaurantCategoryName(tag, page)
             !name.isNullOrBlank() -> restaurantRepository.findByName(name, page)
             payment != null -> restaurantRepository.findByPaymentMethods(payment, page)
             else -> restaurantRepository.findAll(page).toList()

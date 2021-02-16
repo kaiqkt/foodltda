@@ -14,7 +14,7 @@ interface RestaurantRepository : MongoRepository<Restaurant, String> {
     fun findBySlug(slug: String): Restaurant?
     fun existsByLegalPersonId(cnpj: String): Boolean
     fun findByLegalPersonId(id: String): Restaurant?
-    fun findByFoodCategoryName(tag: String, pageable: Pageable): List<Restaurant>
+    fun findByRestaurantCategoryName(tag: String, pageable: Pageable): List<Restaurant>
     fun findByName(name: String, pageable: Pageable): List<Restaurant>
     fun findByPaymentMethods(payment: Payment, pageable: Pageable): List<Restaurant>
 }
