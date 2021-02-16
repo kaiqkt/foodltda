@@ -50,7 +50,6 @@ class RestaurantController(val restaurantService: RestaurantService) {
         return ResponseEntity.ok(response)
     }
 
-    //alterar
     @GetMapping("/filter")
     fun filter(@RequestParam(defaultValue = "20") limit: Int,
                  @RequestParam(defaultValue = "0") offset: Int,
@@ -58,7 +57,6 @@ class RestaurantController(val restaurantService: RestaurantService) {
                  @RequestParam(defaultValue = "") name: String,
                 @RequestParam(defaultValue = "") payment: Payment?): ResponseEntity<Any> {
 
-        // validar se ta aberto ou nao
         val response = Response<Any>()
         val page = PageRequest.of(offset, limit, Sort.Direction.DESC, "name")
 
