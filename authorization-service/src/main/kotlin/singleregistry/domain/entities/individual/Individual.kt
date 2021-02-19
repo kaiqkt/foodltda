@@ -1,4 +1,4 @@
-package singleregistry.domain.entities.legal
+package singleregistry.domain.entities.individual
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
@@ -9,12 +9,11 @@ import singleregistry.domain.entities.person.Phone
 import java.time.LocalDateTime
 
 @Document
-data class Legal(
+data class Individual(
     @Id
     val userId: String? = null,
-    val businessName: String?,
-    val cnpj: String?,
-    val businessType: BusinessType,
+    val name: String?,
+    val nickname: String?,
     val email: String?,
 
     override val personId: String?,
@@ -25,6 +24,6 @@ data class Legal(
     personId,
     address,
     phone,
-    PersonType.PJ,
+    PersonType.PF,
     creationDate
 )
