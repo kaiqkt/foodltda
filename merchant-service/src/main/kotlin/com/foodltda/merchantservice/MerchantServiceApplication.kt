@@ -1,15 +1,8 @@
 package com.foodltda.merchantservice
 
-import com.foodltda.merchantservice.domain.entities.*
-import com.foodltda.merchantservice.domain.entities.enums.Payment
-import com.foodltda.merchantservice.resouce.repositories.*
-import com.github.slugify.Slugify
-import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient
-import java.time.DayOfWeek
-import java.time.LocalTime
 
 @SpringBootApplication
 @EnableDiscoveryClient

@@ -5,7 +5,6 @@ import com.foodltda.merchantservice.application.dto.request.UpdatePerson
 import com.foodltda.merchantservice.application.dto.response.Response
 import com.foodltda.merchantservice.domain.entities.LegalPerson
 import com.foodltda.merchantservice.domain.service.LegalPersonService
-import com.foodltda.merchantservice.resouce.repositories.LegalPersonRepository
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindingResult

@@ -1,4 +1,4 @@
-package com.foodltda.merchantservice.resouce.repositories
+package com.foodltda.merchantservice.domain.repositories
 
 import com.foodltda.merchantservice.domain.entities.LegalPerson
 import org.springframework.data.mongodb.repository.MongoRepository

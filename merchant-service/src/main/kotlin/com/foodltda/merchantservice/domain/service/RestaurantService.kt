@@ -13,8 +13,8 @@ import com.foodltda.merchantservice.domain.exceptions.OwnerException
 import com.foodltda.merchantservice.domain.exceptions.RestaurantNotFoundException
 import com.foodltda.merchantservice.domain.exceptions.TagNotFoundException
 import com.foodltda.merchantservice.domain.validation.ResultValidation
-import com.foodltda.merchantservice.resouce.repositories.RestaurantCategoryRepository
-import com.foodltda.merchantservice.resouce.repositories.RestaurantRepository
+import com.foodltda.merchantservice.domain.repositories.RestaurantCategoryRepository
+import com.foodltda.merchantservice.domain.repositories.RestaurantRepository
 import com.github.slugify.Slugify
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

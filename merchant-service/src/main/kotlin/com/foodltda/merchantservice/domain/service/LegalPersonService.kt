@@ -5,17 +5,15 @@ import com.foodltda.merchantservice.application.dto.request.UpdatePerson
 import com.foodltda.merchantservice.application.dto.response.Response
 import com.foodltda.merchantservice.domain.entities.LegalPerson
 import com.foodltda.merchantservice.domain.entities.LoginUser
-import com.foodltda.merchantservice.domain.exceptions.LegalPersonNotFoundException
 import com.foodltda.merchantservice.domain.validation.ResultValidation
-import com.foodltda.merchantservice.resouce.repositories.LegalPersonRepository
-import com.foodltda.merchantservice.resouce.repositories.LoginPersonRepository
+import com.foodltda.merchantservice.domain.repositories.LegalPersonRepository
+import com.foodltda.merchantservice.domain.repositories.LoginPersonRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import org.springframework.stereotype.Service
 import org.springframework.validation.BindingResult
 import org.springframework.validation.ObjectError
-import java.util.*
 
 @Service
 class LegalPersonService(

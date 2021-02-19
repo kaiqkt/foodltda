@@ -7,9 +7,8 @@ import com.foodltda.merchantservice.domain.entities.Products
 import com.foodltda.merchantservice.domain.entities.Restaurant
 import com.foodltda.merchantservice.domain.exceptions.ProductNotFoundException
 import com.foodltda.merchantservice.domain.exceptions.TagNotFoundException
-import com.foodltda.merchantservice.resouce.repositories.ProductsRepository
-import com.foodltda.merchantservice.resouce.repositories.RestaurantRepository
-import com.foodltda.merchantservice.resouce.repositories.TagRepository
+import com.foodltda.merchantservice.domain.repositories.ProductsRepository
+import com.foodltda.merchantservice.domain.repositories.RestaurantRepository
 import com.github.slugify.Slugify
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

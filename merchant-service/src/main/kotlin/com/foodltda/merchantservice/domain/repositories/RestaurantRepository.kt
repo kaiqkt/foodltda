@@ -1,4 +1,4 @@
-package com.foodltda.merchantservice.resouce.repositories
+package com.foodltda.merchantservice.domain.repositories
 
 import com.foodltda.merchantservice.domain.entities.Restaurant
 import com.foodltda.merchantservice.domain.entities.enums.Payment

@@ -2,8 +2,8 @@ package com.foodltda.merchantservice.domain.service
 
 import com.foodltda.merchantservice.domain.entities.Tag
 import com.foodltda.merchantservice.domain.exceptions.ProductAlreadyExistException
-import com.foodltda.merchantservice.resouce.repositories.ProductsRepository
-import com.foodltda.merchantservice.resouce.repositories.TagRepository
+import com.foodltda.merchantservice.domain.repositories.ProductsRepository
+import com.foodltda.merchantservice.domain.repositories.TagRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
