@@ -7,9 +7,9 @@ import java.time.LocalDateTime
 @Document
 abstract class Person(
     @Id
-    val personId: String? = null,
-    val address: Address?,
-    val phone: Phone,
+    open val personId: String? = null,
+    open val address: Address?,
+    open val phone: Phone,
     val type: PersonType,
-    val creationDate: LocalDateTime? = null
+    open val creationDate: LocalDateTime? = null
 )
