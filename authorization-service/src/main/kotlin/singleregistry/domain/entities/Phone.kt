@@ -1,7 +1,7 @@
-package singleregistry.domain.entities.person
+package singleregistry.domain.entities
 
 data class Phone(
-    val areaCode: String,
     val countryCode: String,
+    val areaCode: String,
     val number: String
 )

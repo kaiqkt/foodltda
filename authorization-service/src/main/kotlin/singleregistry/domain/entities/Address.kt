@@ -1,4 +1,4 @@
-package singleregistry.domain.entities.person
+package singleregistry.domain.entities
 
 data class Address(
         val street: String,
