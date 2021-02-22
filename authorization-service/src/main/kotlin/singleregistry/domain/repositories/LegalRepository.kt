@@ -6,7 +6,7 @@ import singleregistry.domain.entities.Legal
 
 @Repository
 interface LegalRepository: MongoRepository<Legal, String> {
-    fun existsByEmail(email: String?): Boolean
+    fun existsByPersonEmail(email: String?): Boolean
     fun existsByCnpj(cnpj: String?): Boolean
-    fun existsByPhoneCountryCodeAndPhoneAreaCodeAndPhoneNumber(countryCode: String, areaCode: String, number:String): Boolean
+    fun existsByPersonPhoneCountryCodeAndPersonPhoneAreaCodeAndPersonPhoneNumber(countryCode: String, areaCode: String, number:String): Boolean
 }

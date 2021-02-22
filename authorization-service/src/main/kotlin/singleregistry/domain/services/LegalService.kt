@@ -4,52 +4,54 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import singleregistry.domain.entities.Legal
+import singleregistry.domain.entities.PersonType
+import singleregistry.domain.exceptions.DataValidationException
 import singleregistry.domain.repositories.LegalRepository
+import singleregistry.domain.repositories.PersonRepository
 
 @Service
 class LegalService(
-    private val legalRepository: LegalRepository
+    private val legalRepository: LegalRepository,
+    private val personRepository: PersonRepository
 ) {
-    companion object
-
-    val logger: Logger = LoggerFactory.getLogger(LegalService::class.java.name)
+    companion object val logger: Logger = LoggerFactory.getLogger(LegalService::class.java.name)
 
     fun create(legal: Legal) {
         validateDate(legal)
 
-        legalRepository.save(legal)
-
+        logger.info("Creating legal person")
+        personRepository.save(legal.person.copy(personType = PersonType.PJ)).also {
+            val newLegal = legalRepository.save(legal.copy(person = it))
+            logger.info("Legal[${newLegal.id}] with mongo database created")
+        }
     }
 
     private fun validateDate(legal: Legal) {
+        val error = mutableListOf<String>()
+
         legal.let {
-            if (legalRepository.existsByEmail(it.email)) {
-
-                logger.error("Email: ${legal.email} already use")
-
-//                throw DataAlreadyInUseException()
+            if (legalRepository.existsByPersonEmail(it.person.email)) {
+                error.add("Email: ${legal.person.email} already use")
             }
         }
         legal.cnpj?.let {
             if (legalRepository.existsByCnpj(it)) {
-
-                logger.error("CNPJ: ${legal.cnpj} already use")
-
-//                throw DataAlreadyInUseException()
+                error.add("CNPJ: ${legal.cnpj} already use")
             }
         }
-        legal.phone.let {
-            if (legalRepository.existsByPhoneCountryCodeAndPhoneAreaCodeAndPhoneNumber(
-                    legal.phone.countryCode,
-                    legal.phone.areaCode,
-                    legal.phone.number
+        legal.person.phone.let {
+            if (legalRepository.existsByPersonPhoneCountryCodeAndPersonPhoneAreaCodeAndPersonPhoneNumber(
+                    legal.person.phone.countryCode,
+                    legal.person.phone.areaCode,
+                    legal.person.phone.number
                 )
             ) {
-
-                logger.error("Phone: ${legal.phone.countryCode}${legal.phone.areaCode}${legal.phone.number} already use")
-
-//                throw DataAlreadyInUseException()()
+                error.add("Phone: ${legal.person.phone.countryCode}${legal.person.phone.areaCode}${legal.person.phone.number} already use")
             }
+        }
+
+        if (error.isNotEmpty()) {
+            throw DataValidationException(error)
         }
     }
 }
