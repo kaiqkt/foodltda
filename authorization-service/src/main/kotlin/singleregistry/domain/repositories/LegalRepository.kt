@@ -8,5 +8,5 @@ import singleregistry.domain.entities.Legal
 interface LegalRepository: MongoRepository<Legal, String> {
     fun existsByPersonEmail(email: String?): Boolean
     fun existsByCnpj(cnpj: String?): Boolean
-    fun existsByPersonPhoneCountryCodeAndPersonPhoneAreaCodeAndPersonPhoneNumber(countryCode: String, areaCode: String, number:String): Boolean
+    fun existsByPersonPhoneCountryCodeAndPersonPhoneAreaCodeAndPersonPhoneNumber(countryCode: String?, areaCode: String?, number:String?): Boolean
 }

@@ -20,9 +20,11 @@ class LegalService(
         validateDate(legal)
 
         logger.info("Creating legal person")
-        personRepository.save(legal.person.copy(personType = PersonType.PJ)).also {
-            val newLegal = legalRepository.save(legal.copy(person = it))
-            logger.info("Legal[${newLegal.id}] with mongo database created")
+        legal.person?.let {
+            personRepository.save(it).also {
+                val newLegal = legalRepository.save(legal.copy(person = it))
+                logger.info("Legal[${newLegal.id}] with mongo database created")
+            }
         }
     }
 
@@ -30,8 +32,8 @@ class LegalService(
         val error = mutableListOf<String>()
 
         legal.let {
-            if (legalRepository.existsByPersonEmail(it.person.email)) {
-                error.add("Email: ${legal.person.email} already use")
+            if (legalRepository.existsByPersonEmail(it.person?.email)) {
+                error.add("Email: ${legal.person?.email} already use")
             }
         }
         legal.cnpj?.let {
@@ -39,14 +41,14 @@ class LegalService(
                 error.add("CNPJ: ${legal.cnpj} already use")
             }
         }
-        legal.person.phone.let {
+        legal.person?.phone.let {
             if (legalRepository.existsByPersonPhoneCountryCodeAndPersonPhoneAreaCodeAndPersonPhoneNumber(
-                    legal.person.phone.countryCode,
-                    legal.person.phone.areaCode,
-                    legal.person.phone.number
+                    legal.person?.phone?.countryCode,
+                    legal.person?.phone?.areaCode,
+                    legal.person?.phone?.number
                 )
             ) {
-                error.add("Phone: ${legal.person.phone.countryCode}${legal.person.phone.areaCode}${legal.person.phone.number} already use")
+                error.add("Phone: ${legal.person?.phone?.countryCode}${legal.person?.phone?.areaCode}${legal.person?.phone?.number} already use")
             }
         }
 

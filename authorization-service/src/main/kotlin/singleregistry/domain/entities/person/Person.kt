@@ -13,7 +13,7 @@ data class Person(
     val personId: String? = null,
     val email: String?,
     val address: Address?,
-    val phone: Phone,
+    val phone: Phone?,
     val personType: PersonType? = null,
     val creationDate: LocalDateTime? = null
 )
