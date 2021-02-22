@@ -2,9 +2,6 @@ package singleregistry.domain.entities.person
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
-import singleregistry.domain.entities.Address
-import singleregistry.domain.entities.PersonType
-import singleregistry.domain.entities.Phone
 import java.time.LocalDateTime
 
 @Document

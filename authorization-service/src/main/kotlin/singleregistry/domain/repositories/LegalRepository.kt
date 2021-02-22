@@ -2,7 +2,7 @@ package singleregistry.domain.repositories
 
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
-import singleregistry.domain.entities.Legal
+import singleregistry.domain.entities.legal.Legal
 
 @Repository
 interface LegalRepository: MongoRepository<Legal, String> {

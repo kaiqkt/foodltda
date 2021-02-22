@@ -1,4 +1,4 @@
-package singleregistry.domain.entities
+package singleregistry.domain.entities.person
 
 data class Phone(
     val countryCode: String,

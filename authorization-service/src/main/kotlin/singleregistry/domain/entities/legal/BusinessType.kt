@@ -1,4 +1,4 @@
-package singleregistry.domain.entities
+package singleregistry.domain.entities.legal
 
 import com.fasterxml.jackson.annotation.JsonProperty
 

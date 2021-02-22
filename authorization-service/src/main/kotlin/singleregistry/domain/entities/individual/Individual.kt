@@ -1,4 +1,4 @@
-package singleregistry.domain.entities
+package singleregistry.domain.entities.individual
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.TypeAlias

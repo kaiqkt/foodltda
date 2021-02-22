@@ -3,8 +3,7 @@ package singleregistry.domain.services
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import singleregistry.domain.entities.Legal
-import singleregistry.domain.entities.PersonType
+import singleregistry.domain.entities.legal.Legal
 import singleregistry.domain.exceptions.DataValidationException
 import singleregistry.domain.repositories.LegalRepository
 import singleregistry.domain.repositories.PersonRepository

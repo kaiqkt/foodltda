@@ -1,7 +1,7 @@
-package singleregistry.domain.entities
+package singleregistry.domain.entities.legal
 
 import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Field
+import singleregistry.domain.entities.legal.BusinessType
 import singleregistry.domain.entities.person.Person
 
 data class Legal(

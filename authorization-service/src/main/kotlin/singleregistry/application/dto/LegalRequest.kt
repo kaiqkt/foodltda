@@ -1,8 +1,12 @@
 package singleregistry.application.dto
 
 import org.hibernate.validator.constraints.br.CNPJ
-import singleregistry.domain.entities.*
+import singleregistry.domain.entities.legal.BusinessType
+import singleregistry.domain.entities.legal.Legal
+import singleregistry.domain.entities.person.Address
 import singleregistry.domain.entities.person.Person
+import singleregistry.domain.entities.person.PersonType
+import singleregistry.domain.entities.person.Phone
 import java.time.LocalDateTime
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotEmpty
