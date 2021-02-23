@@ -12,5 +12,5 @@ data class Person(
     val address: Address?,
     val phone: Phone?,
     val personType: PersonType? = null,
-    val creationDate: LocalDateTime? = null
+    val createdAt: LocalDateTime? = null
 )

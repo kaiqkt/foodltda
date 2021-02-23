@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 
 data class Individual(
     @Id
-    val id: String? = null,
+    val _id: String? = null,
     val name: String?,
     val nickname: String?,
     val cpf: String?,

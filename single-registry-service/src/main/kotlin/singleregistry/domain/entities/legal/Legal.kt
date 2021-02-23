@@ -6,7 +6,7 @@ import singleregistry.domain.entities.person.Person
 
 data class Legal(
     @Id
-    val id: String? = null,
+    val _id: String? = null,
     val businessName: String?,
     val cnpj: String?,
     val businessType: BusinessType?,

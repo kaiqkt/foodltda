@@ -24,6 +24,8 @@ class LegalRequest(
     @get:NotEmpty(message = "Email cannot be empty.")
     @get:Email(message = "Invalid email.")
     val email: String? = null,
+//    @get:NotEmpty(message = "Password cannot be empty.")
+//    val password: String = "",
     @get:NotEmpty(message = "Street cannot be empty.")
     val street: String? = null,
     @get:NotEmpty(message = "Number cannot be empty.")
@@ -64,7 +66,7 @@ fun LegalRequest.toPerson() = Person(
     address = this.toAddress(),
     phone = this.toPhone(),
     personType = PersonType.PJ,
-    creationDate = LocalDateTime.now()
+    createdAt = LocalDateTime.now()
 )
 
 fun LegalRequest.toAddress() = Address(
