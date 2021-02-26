@@ -13,9 +13,9 @@ class LegalService(
     private val legalRepository: LegalRepository,
     private val personRepository: PersonRepository
 ) {
-    companion object
-
-    val logger: Logger = LoggerFactory.getLogger(LegalService::class.java.name)
+    private companion object {
+        val logger: Logger = LoggerFactory.getLogger(LegalService::class.java.name)
+    }
 
     fun create(legal: Legal): Legal {
         validateDate(legal)
@@ -23,7 +23,7 @@ class LegalService(
         logger.info("Creating legal person")
         personRepository.save(legal.person).also { person ->
             val newLegal = legalRepository.save(legal.copy(person = person))
-            logger.info("Legal[${newLegal.id}] with mongo database created")
+            logger.info("Legal[${newLegal._id}] with mongo database created")
 
             return newLegal
         }
@@ -37,19 +37,18 @@ class LegalService(
                 error.add("Email: ${legal.person.email} already use")
             }
         }
-        legal.cnpj?.let {
+        legal.cnpj.let {
             if (legalRepository.existsByCnpj(it)) {
                 error.add("CNPJ: ${legal.cnpj} already use")
             }
         }
         legal.person.phone.let {
-            if (legalRepository.existsByPersonPhoneCountryCodeAndPersonPhoneAreaCodeAndPersonPhoneNumber(
-                    legal.person.phone?.countryCode,
-                    legal.person.phone?.areaCode,
-                    legal.person.phone?.number
+            if (legalRepository.existsByPersonPhone(it)) {
+                error.add(
+                    "Phone: ${legal.person.phone?.countryCode}" +
+                            "${legal.person.phone?.areaCode}" +
+                            "${legal.person.phone?.number} already use"
                 )
-            ) {
-                error.add("Phone: ${legal.person.phone?.countryCode}${legal.person.phone?.areaCode}${legal.person.phone?.number} already use")
             }
         }
 

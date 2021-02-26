@@ -1,6 +1,8 @@
 package singleregistry.application.controllers
 
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import singleregistry.application.dto.LegalRequest
@@ -14,10 +16,11 @@ import javax.validation.Valid
 @RequestMapping("/legals")
 class LegalController(private val legalService: LegalService) {
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping
-    fun register(@Valid @RequestBody legal: LegalRequest, result: BindingResult): Legal {
+    // MediaType.APPLICATION_JSON_VALUE] produces={"application/json","application/xml"} rem_legal_v1
+    @PostMapping()
+    fun register(@Valid @RequestBody legal: LegalRequest, result: BindingResult): ResponseEntity<Legal> {
         validate(result)
-        return legalService.create(legal.toDomain())
+
+        return ResponseEntity<Legal>(legalService.create(legal.toDomain()), HttpStatus.CREATED)
     }
 }
