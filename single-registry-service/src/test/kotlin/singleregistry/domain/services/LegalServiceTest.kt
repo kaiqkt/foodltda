@@ -13,7 +13,6 @@ import singleregistry.domain.repositories.LegalRepository
 import singleregistry.domain.repositories.PersonRepository
 import singleregistry.factories.LegalFactory
 
-@SpringBootTest
 class LegalServiceTest {
     private lateinit var legalRepository: LegalRepository
     private lateinit var personRepository: PersonRepository
