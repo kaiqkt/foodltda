@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.boot.test.context.SpringBootTest
 import singleregistry.domain.exceptions.DataValidationException
+import singleregistry.domain.exceptions.LegalPersonNotFoundException
 import singleregistry.domain.repositories.LegalRepository
 import singleregistry.domain.repositories.PersonRepository
 import singleregistry.factories.LegalFactory
@@ -84,5 +85,31 @@ class LegalServiceTest {
         }
 
         Assertions.assertEquals(error, response.details())
+    }
+
+    @Test
+    fun `given a valid cnpj, should return a legal person`() {
+        val legal = LegalFactory.sample()
+        val cnpj = "10.501.210/0001-17"
+
+        every { legalRepository.findByCnpj(any()) } returns legal
+
+        legalService.findByCnpj(cnpj)
+
+        verify { legalRepository.findByCnpj(cnpj) }
+    }
+
+    @Test
+    fun `given a invalid cnpj, should be return LegalPersonNotFoundException`() {
+        val cnpj = "10.501.210/0001-17"
+        val error = "Person not found by cnpj: $cnpj"
+
+        every { legalRepository.findByCnpj(any()) } returns null
+
+        val response = assertThrows<LegalPersonNotFoundException> {
+            legalService.findByCnpj(cnpj)
+        }
+
+        Assertions.assertEquals(error, response.message)
     }
 }

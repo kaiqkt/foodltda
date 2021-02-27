@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 import singleregistry.domain.exceptions.DataValidationException
+import singleregistry.domain.exceptions.LegalPersonNotFoundException
+import singleregistry.domain.exceptions.PersonNotFoundException
 import singleregistry.domain.exceptions.ResultBindingException
 import java.time.LocalDateTime
 import java.util.*
@@ -17,7 +19,7 @@ import java.util.*
 @ControllerAdvice
 class ErrorHandler : ResponseEntityExceptionHandler() {
 
-    companion object val logger: Logger = LoggerFactory.getLogger(ErrorHandler::class.java.name)
+    private companion object val logger: Logger = LoggerFactory.getLogger(ErrorHandler::class.java.name)
 
     @ExceptionHandler(DataValidationException::class)
     fun handleDataAlreadyInUseException(
@@ -41,5 +43,29 @@ class ErrorHandler : ResponseEntityExceptionHandler() {
         body["timestamp"] = LocalDateTime.now()
         body["message"] = ex.details()
         return ResponseEntity(body, HttpStatus.BAD_REQUEST)
+    }
+
+    @ExceptionHandler(LegalPersonNotFoundException::class)
+    fun handleLegalPersonNotFoundException(
+        ex: LegalPersonNotFoundException, request: WebRequest): ResponseEntity<Any> {
+        val uri: List<String> = request.getDescription(true).split(";")
+        logger.error("person not found exception error: $uri")
+
+        val body: MutableMap<String, Any> = LinkedHashMap()
+        body["timestamp"] = LocalDateTime.now()
+        body["message"] = ex.message
+        return ResponseEntity(body, HttpStatus.NOT_FOUND)
+    }
+
+    @ExceptionHandler(PersonNotFoundException::class)
+    fun handlePersonNotFoundException(
+        ex: PersonNotFoundException, request: WebRequest): ResponseEntity<Any> {
+        val uri: List<String> = request.getDescription(true).split(";")
+        logger.error("person not found exception error: $uri")
+
+        val body: MutableMap<String, Any> = LinkedHashMap()
+        body["timestamp"] = LocalDateTime.now()
+        body["message"] = ex.message
+        return ResponseEntity(body, HttpStatus.NOT_FOUND)
     }
 }

@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import singleregistry.domain.entities.legal.Legal
 import singleregistry.domain.exceptions.DataValidationException
+import singleregistry.domain.exceptions.LegalPersonNotFoundException
 import singleregistry.domain.repositories.LegalRepository
 import singleregistry.domain.repositories.PersonRepository
 
@@ -21,6 +22,7 @@ class LegalService(
         validateDate(legal)
 
         logger.info("Creating legal person")
+
         personRepository.save(legal.person).also { person ->
             val newLegal = legalRepository.save(legal.copy(person = person))
             logger.info("Legal[${newLegal._id}] with mongo database created")
@@ -28,6 +30,9 @@ class LegalService(
             return newLegal
         }
     }
+
+    fun findByCnpj(cnpj: String) =
+        legalRepository.findByCnpj(cnpj) ?: throw LegalPersonNotFoundException("Person not found by cnpj: $cnpj")
 
     private fun validateDate(legal: Legal) {
         val error = mutableListOf<String>()

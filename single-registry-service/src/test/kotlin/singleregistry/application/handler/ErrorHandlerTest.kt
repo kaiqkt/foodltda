@@ -7,8 +7,9 @@ import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
 import org.springframework.web.context.request.WebRequest
 import singleregistry.domain.exceptions.DataValidationException
+import singleregistry.domain.exceptions.LegalPersonNotFoundException
+import singleregistry.domain.exceptions.PersonNotFoundException
 import singleregistry.domain.exceptions.ResultBindingException
-import java.time.LocalDateTime
 
 
 class ErrorHandlerTest {
@@ -45,6 +46,34 @@ class ErrorHandlerTest {
         val response = errorHandler.handleResultBindingException(resultBindingException, request)
 
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.statusCode)
+        Assertions.assertNotNull(response)
+    }
+
+    @Test
+    fun `given an errorHandler when handling a LegalPersonNotFoundException should return HTTP status 400`() {
+        val request = webRequest
+
+        val errorHandler = ErrorHandler()
+        val expectedMessage = "error"
+        val legalPersonNotFoundException = LegalPersonNotFoundException(expectedMessage)
+
+        val response = errorHandler.handleLegalPersonNotFoundException(legalPersonNotFoundException, request)
+
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
+        Assertions.assertNotNull(response)
+    }
+
+    @Test
+    fun `given an errorHandler when handling a PersonNotFoundException should return HTTP status 400`() {
+        val request = webRequest
+
+        val errorHandler = ErrorHandler()
+        val expectedMessage = "error"
+        val personNotFoundException = PersonNotFoundException(expectedMessage)
+
+        val response = errorHandler.handlePersonNotFoundException(personNotFoundException, request)
+
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
         Assertions.assertNotNull(response)
     }
 }

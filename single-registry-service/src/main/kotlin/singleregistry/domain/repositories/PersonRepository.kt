@@ -6,4 +6,5 @@ import singleregistry.domain.entities.person.Person
 
 @Repository
 interface PersonRepository: MongoRepository<Person, String> {
+    fun findByPersonId(personId: String): Person?
 }

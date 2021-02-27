@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.validation.BindingResult
 import singleregistry.application.controllers.LegalController
 import singleregistry.application.dto.toDomain
+import singleregistry.domain.entities.legal.Legal
 import singleregistry.domain.exceptions.ResultBindingException
 import singleregistry.domain.services.LegalService
 import singleregistry.factories.LegalFactory
@@ -50,5 +51,19 @@ class LegalControllerTest {
         assertThrows<ResultBindingException> {
             legalController.register(request, result)
         }
+    }
+
+    @Test
+    fun `given valid cnpj request should return a legal person`() {
+        val legal = LegalFactory.sample()
+        val cnpj = "10.501.210/0001-17"
+
+        every { legalService.findByCnpj(any()) } returns legal
+
+        val controller = legalController.getByCnpj(cnpj)
+
+        verify { legalService.findByCnpj(cnpj) }
+        Assertions.assertEquals(HttpStatus.ACCEPTED, controller.statusCode)
+        Assertions.assertEquals(legal, controller.body)
     }
 }
