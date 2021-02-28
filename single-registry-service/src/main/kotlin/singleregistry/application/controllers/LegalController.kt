@@ -17,7 +17,7 @@ import javax.websocket.server.PathParam
 class LegalController(private val legalService: LegalService) {
 
     // MediaType.APPLICATION_JSON_VALUE] produces={"application/json","application/xml"} rem_legal_v1
-    @PostMapping("/register")
+    @PostMapping
     fun register(@Valid @RequestBody legal: LegalRequest, result: BindingResult): ResponseEntity<Legal> {
         validate(result)
 
