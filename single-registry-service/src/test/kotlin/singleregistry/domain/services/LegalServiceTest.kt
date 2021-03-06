@@ -44,7 +44,7 @@ class LegalServiceTest {
         val legal = LegalFactory.sample()
         val error = listOf("Email: ${legal.person.email} already use")
 
-        every { legalRepository.existsByPersonEmail(legal.person.email) } returns true
+        every { personRepository.existsByEmail(legal.person.email) } returns true
 
         val response = assertThrows<DataValidationException> {
             legalService.create(legal)
@@ -77,7 +77,7 @@ class LegalServiceTest {
         )
 
         every {
-            legalRepository.existsByPersonPhone(legal.person.phone)
+            personRepository.existsByPhone(legal.person.phone)
         } returns true
 
         val response = assertThrows<DataValidationException> {

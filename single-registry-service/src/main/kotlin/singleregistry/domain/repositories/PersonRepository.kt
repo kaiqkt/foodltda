@@ -3,8 +3,11 @@ package singleregistry.domain.repositories
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
 import singleregistry.domain.entities.person.Person
+import singleregistry.domain.entities.person.Phone
 
 @Repository
 interface PersonRepository: MongoRepository<Person, String> {
     fun findByPersonId(personId: String): Person?
+    fun existsByEmail(email: String?): Boolean
+    fun existsByPhone(phone: Phone?): Boolean
 }

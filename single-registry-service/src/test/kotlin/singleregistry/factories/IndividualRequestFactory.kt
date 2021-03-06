@@ -1,14 +1,13 @@
 package singleregistry.factories
 
-import singleregistry.application.dto.LegalRequest
-import singleregistry.domain.entities.legal.BusinessType
+import singleregistry.application.dto.IndividualRequest
 
-object LegalRequestFactory {
+object IndividualRequestFactory {
 
-    fun sample() = LegalRequest(
-        businessName = "Restaurant",
-        cnpj = "10.501.210/0001-17",
-        businessType = BusinessType.LTDA,
+    fun sample() = IndividualRequest(
+        name = "Kaique Gomes",
+        nickname = "kaique",
+        cpf = "221.670.888-76",
         email = "test@test.com",
         street = "Rua ABC de D",
         number = "75",
@@ -22,4 +21,5 @@ object LegalRequestFactory {
         areaCode = "11",
         phoneNumber = "40028922"
     )
+
 }

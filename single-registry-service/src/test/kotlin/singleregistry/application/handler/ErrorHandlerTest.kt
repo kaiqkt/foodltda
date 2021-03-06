@@ -6,10 +6,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
 import org.springframework.web.context.request.WebRequest
-import singleregistry.domain.exceptions.DataValidationException
-import singleregistry.domain.exceptions.LegalPersonNotFoundException
-import singleregistry.domain.exceptions.PersonNotFoundException
-import singleregistry.domain.exceptions.ResultBindingException
+import singleregistry.domain.exceptions.*
 
 
 class ErrorHandlerTest {
@@ -50,7 +47,7 @@ class ErrorHandlerTest {
     }
 
     @Test
-    fun `given an errorHandler when handling a LegalPersonNotFoundException should return HTTP status 400`() {
+    fun `given an errorHandler when handling a LegalPersonNotFoundException should return HTTP status 404`() {
         val request = webRequest
 
         val errorHandler = ErrorHandler()
@@ -64,7 +61,7 @@ class ErrorHandlerTest {
     }
 
     @Test
-    fun `given an errorHandler when handling a PersonNotFoundException should return HTTP status 400`() {
+    fun `given an errorHandler when handling a PersonNotFoundException should return HTTP status 404`() {
         val request = webRequest
 
         val errorHandler = ErrorHandler()
@@ -72,6 +69,20 @@ class ErrorHandlerTest {
         val personNotFoundException = PersonNotFoundException(expectedMessage)
 
         val response = errorHandler.handlePersonNotFoundException(personNotFoundException, request)
+
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
+        Assertions.assertNotNull(response)
+    }
+
+    @Test
+    fun `given an errorHandler when handling a IndividualPersonNotFoundException should return HTTP status 404`() {
+        val request = webRequest
+
+        val errorHandler = ErrorHandler()
+        val expectedMessage = "error"
+        val individualPersonNotFoundException = IndividualPersonNotFoundException(expectedMessage)
+
+        val response = errorHandler.handleIndividualPersonNotFoundException(individualPersonNotFoundException, request)
 
         Assertions.assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
         Assertions.assertNotNull(response)

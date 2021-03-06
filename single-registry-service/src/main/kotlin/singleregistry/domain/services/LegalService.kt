@@ -38,7 +38,7 @@ class LegalService(
         val error = mutableListOf<String>()
 
         legal.let {
-            if (legalRepository.existsByPersonEmail(it.person.email)) {
+            if (personRepository.existsByEmail(it.person.email)) {
                 error.add("Email: ${legal.person.email} already use")
             }
         }
@@ -48,7 +48,7 @@ class LegalService(
             }
         }
         legal.person.phone.let {
-            if (legalRepository.existsByPersonPhone(it)) {
+            if (personRepository.existsByPhone(it)) {
                 error.add(
                     "Phone: ${legal.person.phone?.countryCode}" +
                             "${legal.person.phone?.areaCode}" +

@@ -10,7 +10,6 @@ import singleregistry.application.validation.JsonValidator.validate
 import singleregistry.domain.entities.legal.Legal
 import singleregistry.domain.services.LegalService
 import javax.validation.Valid
-import javax.websocket.server.PathParam
 
 @RestController
 @RequestMapping("/legal")

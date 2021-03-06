@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import singleregistry.domain.entities.legal.Legal
 import singleregistry.domain.entities.person.Person
 import singleregistry.domain.services.PersonService
 
@@ -14,6 +13,7 @@ import singleregistry.domain.services.PersonService
 @RequestMapping("/person")
 class PersonController(private val personService: PersonService){
 
+    //alterar
     //service token
     @GetMapping("{personId}")
     fun getByPersonId(@PathVariable personId: String): ResponseEntity<Person> {

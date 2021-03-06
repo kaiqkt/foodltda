@@ -8,10 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
-import singleregistry.domain.exceptions.DataValidationException
-import singleregistry.domain.exceptions.LegalPersonNotFoundException
-import singleregistry.domain.exceptions.PersonNotFoundException
-import singleregistry.domain.exceptions.ResultBindingException
+import singleregistry.domain.exceptions.*
 import java.time.LocalDateTime
 import java.util.*
 
@@ -60,6 +57,18 @@ class ErrorHandler : ResponseEntityExceptionHandler() {
     @ExceptionHandler(PersonNotFoundException::class)
     fun handlePersonNotFoundException(
         ex: PersonNotFoundException, request: WebRequest): ResponseEntity<Any> {
+        val uri: List<String> = request.getDescription(true).split(";")
+        logger.error("person not found exception error: $uri")
+
+        val body: MutableMap<String, Any> = LinkedHashMap()
+        body["timestamp"] = LocalDateTime.now()
+        body["message"] = ex.message
+        return ResponseEntity(body, HttpStatus.NOT_FOUND)
+    }
+
+    @ExceptionHandler(IndividualPersonNotFoundException::class)
+    fun handleIndividualPersonNotFoundException(
+        ex: IndividualPersonNotFoundException, request: WebRequest): ResponseEntity<Any> {
         val uri: List<String> = request.getDescription(true).split(";")
         logger.error("person not found exception error: $uri")
 

@@ -10,7 +10,7 @@
     </parent>
     <groupId>single-registry-service</groupId>
     <artifactId>single-registry-service</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0</version>
     <name>single-registry-service</name>
     <description>Servico de restaurante</description>
     <properties>
