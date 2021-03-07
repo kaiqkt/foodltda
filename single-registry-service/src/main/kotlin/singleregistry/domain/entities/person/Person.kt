@@ -11,6 +11,6 @@ data class Person(
     val email: String?,
     val address: Address?,
     val phone: Phone?,
-    val personType: PersonType? = null,
+    val type: PersonType? = null,
     val createdAt: LocalDateTime? = null
 )

@@ -13,13 +13,13 @@ object PersonFactory {
         email: String = "test@test.com",
         address: Address = AddressFactory.sample(),
         phone: Phone = PhoneFactory.sample(),
-        personType: PersonType
+        personType: PersonType?
     ) = Person(
         personId = personId,
         email = email,
         address = address,
         phone = phone,
-        personType = personType,
+        type = personType,
         createdAt = LocalDateTime.now()
     )
 }

@@ -65,7 +65,7 @@ fun LegalRequest.toPerson() = Person(
     email = this.email,
     address = this.toAddress(),
     phone = this.toPhone(),
-    personType = PersonType.PJ,
+    type = PersonType.PJ,
     createdAt = LocalDateTime.now()
 )
 

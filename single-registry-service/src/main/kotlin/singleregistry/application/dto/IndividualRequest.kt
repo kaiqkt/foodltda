@@ -1,9 +1,7 @@
 package singleregistry.application.dto
 
-import org.hibernate.validator.constraints.br.CNPJ
 import org.hibernate.validator.constraints.br.CPF
 import singleregistry.domain.entities.individual.Individual
-import singleregistry.domain.entities.legal.BusinessType
 import singleregistry.domain.entities.person.Address
 import singleregistry.domain.entities.person.Person
 import singleregistry.domain.entities.person.PersonType
@@ -66,7 +64,7 @@ fun IndividualRequest.toPerson() = Person(
     email = this.email,
     address = this.toAddress(),
     phone = this.toPhone(),
-    personType = PersonType.PF,
+    type = PersonType.PF,
     createdAt = LocalDateTime.now()
 )
 

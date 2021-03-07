@@ -8,9 +8,9 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
 import singleregistry.application.controllers.PersonController
-import singleregistry.domain.entities.person.PersonType
+import singleregistry.application.dto.PersonResponse
 import singleregistry.domain.services.PersonService
-import singleregistry.factories.PersonFactory
+import singleregistry.factories.LegalFactory
 
 class PersonControllerTest {
     private lateinit var personService: PersonService
@@ -24,10 +24,10 @@ class PersonControllerTest {
 
     @Test
     fun `given valid person id should return person and http status 200`() {
-        val person = PersonFactory.sample(personType = PersonType.PJ)
+        val response = PersonResponse(legal = LegalFactory.sample())
         val personId = "001"
 
-        every { personService.findByPersonId(any()) } returns person
+        every { personService.findByPersonId(any()) } returns response
 
         val controller = personController.getByPersonId(personId)
 
