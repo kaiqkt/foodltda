@@ -30,6 +30,4 @@ class IndividualController(private val individualService: IndividualService) {
 
         return ResponseEntity<Individual>(individualService.findByCpf(cpf), HttpStatus.ACCEPTED)
     }
-
-    //update?
 }

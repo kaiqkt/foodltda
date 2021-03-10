@@ -29,6 +29,4 @@ class LegalController(private val legalService: LegalService) {
 
         return ResponseEntity<Legal>(legalService.findByCnpj(cnpj), HttpStatus.ACCEPTED)
     }
-
-    //update?
 }
