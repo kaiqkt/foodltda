@@ -32,15 +32,12 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
         print(secret)
         http.cors().and().csrf().disable()
         http.authorizeRequests()
+            .antMatchers(HttpMethod.POST, *POST_MATCHERS).permitAll()
             .anyRequest().authenticated()
         http.addFilter(AuthorizationFilter(authenticationManager(), secret))
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     }
 
-    @Throws(Exception::class)
-    override fun configure(auth: AuthenticationManagerBuilder) {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder())
-    }
 
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
@@ -51,8 +48,10 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
         return source
     }
 
-    @Bean
-    fun bCryptPasswordEncoder(): BCryptPasswordEncoder {
-        return BCryptPasswordEncoder()
+    companion object {
+        private val POST_MATCHERS = arrayOf(
+            "/individual",
+            "/legal"
+        )
     }
 }
