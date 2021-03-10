@@ -1,10 +1,17 @@
 server:
   port: 8083
 
+secret: 123SINGLE56
+
 spring:
   application:
     name: merchant-service
   data:
     mongodb:
       uri: mongodb://localhost:27018/single-registry
+  security:
+    user:
+      name: service_auth
+      password: 12345
+
 

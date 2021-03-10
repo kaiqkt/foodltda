@@ -16,7 +16,7 @@ class PersonController(private val personService: PersonService){
 
     //alterar
     //service token
-    @GetMapping("{personId}")
+    @GetMapping("/{personId}")
     fun getByPersonId(@PathVariable personId: String): ResponseEntity<PersonResponse> {
 
         return ResponseEntity<PersonResponse>(personService.findByPersonId(personId), HttpStatus.ACCEPTED)
