@@ -1,17 +1,13 @@
 server:
   port: 8084
 
-jwt.secret: 123SINGLE56
+token: 123SINGLE56
+
+jwt.secret: mysecret
 
 spring:
   application:
     name: merchant-service
   data:
     mongodb:
-      uri: mongodb://localhost:27018/single-registry
-  security:
-    user:
-      name: service_auth
-      password: 12345
-
-
+      uri: mongodb://localhost:27018/authorization

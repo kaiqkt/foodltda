@@ -5,10 +5,11 @@ import authorizationservice.domain.exceptions.DataValidationException
 import authorizationservice.domain.repositories.UserRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
-class UserService(private val userRepository: UserRepository) {
+class UserService(private val userRepository: UserRepository, private val bCryptPasswordEncoder: BCryptPasswordEncoder) {
 
     private companion object {
         val logger: Logger = LoggerFactory.getLogger(UserService::class.java)
@@ -17,7 +18,11 @@ class UserService(private val userRepository: UserRepository) {
     fun create(user: User): User {
         validateDate(user)
 
+
+
         logger.info("Creating user")
+
+        user.password = bCryptPasswordEncoder.encode(user.password)
 
         val newUser = userRepository.save(user)
         logger.info("User[${newUser._id}] with mongo database created")

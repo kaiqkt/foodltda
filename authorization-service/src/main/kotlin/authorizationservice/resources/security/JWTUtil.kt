@@ -14,9 +14,9 @@ class JWTUtil {
 
     private val expiration: Long = 7200000
 
-    fun generateToken(username: String?): String {
+    fun generateToken(personId: String?): String {
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(personId)
                 .setExpiration(Date(System.currentTimeMillis() + expiration))
                 .signWith(SignatureAlgorithm.HS512, secret.toByteArray())
                 .compact()

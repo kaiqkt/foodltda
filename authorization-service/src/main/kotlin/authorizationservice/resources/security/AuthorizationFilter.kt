@@ -14,7 +14,12 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import kotlin.jvm.Throws
 
-class AuthorizationFilter(authenticationManager: AuthenticationManager?, private val jwtUtil: JWTUtil, private val userDetailsService: UserDetailsService, secret: String) : BasicAuthenticationFilter(authenticationManager) {
+class AuthorizationFilter(
+    authenticationManager: AuthenticationManager?,
+    private val jwtUtil: JWTUtil,
+    private val userDetailsService: UserDetailsService,
+    secret: String
+) : BasicAuthenticationFilter(authenticationManager) {
 
     private val authToken = secret
 
@@ -23,10 +28,10 @@ class AuthorizationFilter(authenticationManager: AuthenticationManager?, private
         val header = request.getHeader("Authorization")
         header?.let {
             var auth: UsernamePasswordAuthenticationToken? = null
-            auth = if (it.startsWith("Bearer ")){
+            auth = if (it.startsWith("Bearer ")) {
                 getJWTAuthentication(header.substring(7))
             } else {
-                getAuthentication(header.substring(7))
+                getAuthentication(header)
             }
 
             if (auth != null) {
@@ -41,7 +46,7 @@ class AuthorizationFilter(authenticationManager: AuthenticationManager?, private
         if (jwtUtil.validToken(token)) {
             val username = jwtUtil.getUsername(token)
             val user = userDetailsService.loadUserByUsername(username)
-            return UsernamePasswordAuthenticationToken(user, null, user.authorities)
+            return UsernamePasswordAuthenticationToken(user, null, mutableListOf<GrantedAuthority>(SimpleGrantedAuthority("ROLE_USER")))
         }
         return null
     }
@@ -51,7 +56,8 @@ class AuthorizationFilter(authenticationManager: AuthenticationManager?, private
             val user = "auth_service"
             return UsernamePasswordAuthenticationToken(
                 user, null,
-                mutableListOf<GrantedAuthority>(SimpleGrantedAuthority(null)))
+                mutableListOf<GrantedAuthority>(SimpleGrantedAuthority("ROLE_ADM"))
+            )
         }
 
         return null

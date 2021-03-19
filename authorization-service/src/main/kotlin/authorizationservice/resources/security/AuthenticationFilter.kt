@@ -35,9 +35,9 @@ class AuthenticationFilter(jwtUtil: JWTUtil, authenticationManager: Authenticati
 
     @Throws(IOException::class, ServletException::class)
     override fun successfulAuthentication(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain, authResult: Authentication) {
-        val username: String? = (authResult.principal as UserDetailsImpl).username
-        val token = jwtUtil.generateToken(username)
+        val username: String = (authResult.principal as UserDetailsImpl).username
         val user = userRepository.findByEmail(username)
+        val token = jwtUtil.generateToken(user?.personId)
         response.contentType = "application/json"
         response.writer.append(user.toString())
         response.addHeader("Authorization", "Bearer $token")

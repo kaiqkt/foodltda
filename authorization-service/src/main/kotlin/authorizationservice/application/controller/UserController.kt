@@ -7,21 +7,22 @@ import authorizationservice.domain.entities.User
 import authorizationservice.domain.services.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.annotation.Secured
+import org.springframework.security.config.web.servlet.SecurityMarker
 import org.springframework.validation.BindingResult
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RestController
 @RequestMapping("/users")
 class UserController(private val userService: UserService) {
 
+    @Secured("ROLE_ADM")
     @PostMapping
     fun register(@Valid @RequestBody user: UserRequest, result: BindingResult): ResponseEntity<User>{
         JsonValidator.validate(result)
 
         return ResponseEntity<User>(userService.create(user.toDomain()), HttpStatus.CREATED)
     }
+
 }
