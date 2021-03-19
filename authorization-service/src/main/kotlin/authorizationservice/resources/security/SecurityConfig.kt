@@ -1,5 +1,6 @@
-package singleregistry.resources.security
+package authorizationservice.resources.security
 
+import authorizationservice.domain.repositories.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -15,7 +16,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
-import java.util.*
 
 
 @Configuration
@@ -24,34 +24,51 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     @Autowired
     private lateinit var userDetailsService: UserDetailsService
 
+    @Autowired
+    private lateinit var jwtUtil: JWTUtil
+
+    @Autowired
+    private lateinit var userRepository: UserRepository
+
     @Value("\${token}")
     private lateinit var secret: String
 
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
-        print(secret)
         http.cors().and().csrf().disable()
         http.authorizeRequests()
-            .antMatchers(HttpMethod.POST, *POST_MATCHERS).permitAll()
-            .anyRequest().authenticated()
-        http.addFilter(AuthorizationFilter(authenticationManager(), secret))
+                .antMatchers(HttpMethod.POST, *POST_MATCHERS).permitAll()
+                .antMatchers(HttpMethod.GET, *GET_MATCHERS).permitAll()
+                .anyRequest().authenticated()
+        http.addFilter(AuthenticationFilter(jwtUtil, authenticationManager(), userRepository))
+        http.addFilter(AuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService, secret))
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     }
 
+    @Throws(Exception::class)
+    override fun configure(auth: AuthenticationManagerBuilder) {
+        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder())
+    }
 
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val cors = CorsConfiguration().applyPermitDefaultValues()
-        cors.allowedMethods = Arrays.asList("POST", "GET", "PUT", "DELETE", "OPTIONS")
+        cors.allowedMethods = listOf("POST", "GET", "PUT", "DELETE", "OPTIONS")
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", cors)
         return source
     }
 
+    @Bean
+    fun bCryptPasswordEncoder(): BCryptPasswordEncoder {
+        return BCryptPasswordEncoder()
+    }
+
     companion object {
         private val POST_MATCHERS = arrayOf(
-            "/individual",
-            "/legal"
+                "/users"
         )
+
+        private val GET_MATCHERS = emptyArray<String>()
     }
 }

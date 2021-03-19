@@ -23,7 +23,7 @@ class IndividualService(
     fun create(individual: Individual): Individual {
         validateDate(individual)
 
-        logger.info("Individual legal person")
+        logger.info("Creating individual person")
 
         personRepository.save(individual.person).also { person ->
             val newIndividual = individualRepository.save(individual.copy(person = person))

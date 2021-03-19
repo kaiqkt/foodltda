@@ -1,7 +1,7 @@
 server:
-  port: 8083
+  port: 8084
 
-token: 123SINGLE56
+jwt.secret: 123SINGLE56
 
 spring:
   application:

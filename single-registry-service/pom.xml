@@ -12,7 +12,7 @@
     <artifactId>single-registry-service</artifactId>
     <version>1.0</version>
     <name>single-registry-service</name>
-    <description>Servico de restaurante</description>
+    <description>Servico de cadastro de usuario</description>
     <properties>
         <java.version>11</java.version>
         <kotlin.version>1.4.21</kotlin.version>
@@ -75,11 +75,11 @@
             <artifactId>hibernate-validator</artifactId>
             <version>6.1.6.Final</version>
         </dependency>
-        <!--		<dependency>-->
-        <!--			<groupId>org.springframework.security</groupId>-->
-        <!--			<artifactId>spring-security-test</artifactId>-->
-        <!--			<scope>test</scope>-->
-        <!--		</dependency>-->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <!--	<dependencyManagement>
             <dependencies>
