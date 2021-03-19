@@ -149,6 +149,11 @@
 				<version>0.8.5</version>
 				<configuration>
 					<excludes>
+						<exclude>**/domain/entities/**</exclude>
+						<exclude>**/application/dto/**</exclude>
+						<exclude>**/AuthorizationServiceApplication**</exclude>
+						<exclude>**/application/validation/**</exclude>
+						<exclude>**/resources/security/UserDetailsImpl**</exclude>
 					</excludes>
 				</configuration>
 				<executions>

@@ -1,5 +1,7 @@
 package authorizationservice.resources.security
 
+import authorizationservice.domain.exceptions.InvalidTokenException
+import authorizationservice.domain.repositories.UserRepository
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
@@ -8,32 +10,32 @@ import org.springframework.stereotype.Component
 import java.util.*
 
 @Component
-class JWTUtil {
-    @Value("\${jwt.secret}")
-    private lateinit var secret: String
-
-    private val expiration: Long = 7200000
+class JWTUtil(
+    @Value("\${jwt.secret}") private var secret: String,
+    @Value("\${jwt.expiration}") private var expiration: String,
+    private val userRepository: UserRepository
+) {
 
     fun generateToken(personId: String?): String {
         return Jwts.builder()
-                .setSubject(personId)
-                .setExpiration(Date(System.currentTimeMillis() + expiration))
-                .signWith(SignatureAlgorithm.HS512, secret.toByteArray())
-                .compact()
+            .setSubject(personId)
+            .setExpiration(Date(System.currentTimeMillis() + expiration.toLong()))
+            .signWith(SignatureAlgorithm.HS512, secret.toByteArray())
+            .compact()
     }
 
     fun validToken(token: String): Boolean {
         val claims = getClaims(token)
         if (claims != null) {
-            val username = claims.subject
+            val personId = claims.subject
             val expirationDate = claims.expiration
             val now = Date(System.currentTimeMillis())
-            return username != null && expirationDate != null && now.before(expirationDate)
+            return personId != null && expirationDate != null && now.before(expirationDate) && userRepository.existsByPersonId(personId)
         }
         return false
     }
 
-    fun getUsername(token: String): String? {
+    fun getPersonId(token: String): String? {
         val claims = getClaims(token)
         return claims?.subject
     }
@@ -42,7 +44,7 @@ class JWTUtil {
         return try {
             Jwts.parser().setSigningKey(secret.toByteArray()).parseClaimsJws(token).body
         } catch (e: Exception) {
-            null
+            throw InvalidTokenException("Invalid token: $token")
         }
     }
 }

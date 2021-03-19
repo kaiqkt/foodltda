@@ -9,7 +9,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
-class UserService(private val userRepository: UserRepository, private val bCryptPasswordEncoder: BCryptPasswordEncoder) {
+class UserService(
+    private val userRepository: UserRepository,
+    private val bCryptPasswordEncoder: BCryptPasswordEncoder
+) {
 
     private companion object {
         val logger: Logger = LoggerFactory.getLogger(UserService::class.java)
@@ -17,8 +20,6 @@ class UserService(private val userRepository: UserRepository, private val bCrypt
 
     fun create(user: User): User {
         validateDate(user)
-
-
 
         logger.info("Creating user")
 

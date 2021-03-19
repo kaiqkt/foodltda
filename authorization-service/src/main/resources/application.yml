@@ -4,6 +4,7 @@ server:
 token: 123SINGLE56
 
 jwt.secret: mysecret
+jwt.expiration: 7200000
 
 spring:
   application:

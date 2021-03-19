@@ -17,7 +17,6 @@ import javax.validation.Valid
 @RequestMapping("/users")
 class UserController(private val userService: UserService) {
 
-    @Secured("ROLE_ADM")
     @PostMapping
     fun register(@Valid @RequestBody user: UserRequest, result: BindingResult): ResponseEntity<User>{
         JsonValidator.validate(result)

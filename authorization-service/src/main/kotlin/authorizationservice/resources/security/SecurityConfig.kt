@@ -37,7 +37,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     override fun configure(http: HttpSecurity) {
         http.cors().and().csrf().disable()
         http.authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/users").hasRole("USER")
+                .antMatchers(HttpMethod.POST, "/users").hasRole("ADM")
                 .anyRequest().authenticated()
         http.addFilter(AuthenticationFilter(jwtUtil, authenticationManager(), userRepository))
         http.addFilter(AuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService, secret))

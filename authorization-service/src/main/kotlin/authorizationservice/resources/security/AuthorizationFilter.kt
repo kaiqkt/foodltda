@@ -27,8 +27,7 @@ class AuthorizationFilter(
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
         val header = request.getHeader("Authorization")
         header?.let {
-            var auth: UsernamePasswordAuthenticationToken? = null
-            auth = if (it.startsWith("Bearer ")) {
+            val auth = if (it.startsWith("Bearer ")) {
                 getJWTAuthentication(header.substring(7))
             } else {
                 getAuthentication(header)
@@ -44,9 +43,9 @@ class AuthorizationFilter(
 
     private fun getJWTAuthentication(token: String): UsernamePasswordAuthenticationToken? {
         if (jwtUtil.validToken(token)) {
-            val username = jwtUtil.getUsername(token)
+            val username = jwtUtil.getPersonId(token)
             val user = userDetailsService.loadUserByUsername(username)
-            return UsernamePasswordAuthenticationToken(user, null, mutableListOf<GrantedAuthority>(SimpleGrantedAuthority("ROLE_USER")))
+            return UsernamePasswordAuthenticationToken(user, null, user.authorities)
         }
         return null
     }

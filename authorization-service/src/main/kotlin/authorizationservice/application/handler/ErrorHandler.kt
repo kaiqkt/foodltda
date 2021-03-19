@@ -1,6 +1,7 @@
 package authorizationservice.application.handler
 
 import authorizationservice.domain.exceptions.DataValidationException
+import authorizationservice.domain.exceptions.InvalidTokenException
 import authorizationservice.domain.exceptions.ResultBindingException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -47,11 +48,24 @@ class ErrorHandler : ResponseEntityExceptionHandler() {
     fun handleUsernameNotFoundException(
         ex: UsernameNotFoundException, request: WebRequest): ResponseEntity<Any> {
         val uri: List<String> = request.getDescription(true).split(";")
-        logger.error("data validation exception error: $uri")
+        logger.error("username not found exception error: $uri")
 
         val body: MutableMap<String, Any> = LinkedHashMap()
         body["timestamp"] = LocalDateTime.now()
         body["message"] = ex.message!!
-        return ResponseEntity(body, HttpStatus.BAD_REQUEST)
+        return ResponseEntity(body, HttpStatus.FORBIDDEN)
     }
+
+    @ExceptionHandler(InvalidTokenException::class)
+    fun handleInvalidTokenException(
+        ex: InvalidTokenException, request: WebRequest): ResponseEntity<Any> {
+        val uri: List<String> = request.getDescription(true).split(";")
+        logger.error("invalid token exception error: $uri")
+
+        val body: MutableMap<String, Any> = LinkedHashMap()
+        body["timestamp"] = LocalDateTime.now()
+        body["message"] = ex.message
+        return ResponseEntity(body, HttpStatus.UNAUTHORIZED)
+    }
+
 }
