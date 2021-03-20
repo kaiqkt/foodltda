@@ -18,10 +18,8 @@ class AuthorizationFilter(
     authenticationManager: AuthenticationManager?,
     private val jwtUtil: JWTUtil,
     private val userDetailsService: UserDetailsService,
-    secret: String
+    private val secret: String
 ) : BasicAuthenticationFilter(authenticationManager) {
-
-    private val authToken = secret
 
     @Throws(IOException::class, ServletException::class)
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
@@ -51,7 +49,7 @@ class AuthorizationFilter(
     }
 
     private fun getAuthentication(token: String): UsernamePasswordAuthenticationToken? {
-        if (authToken == token) {
+        if (secret == token) {
             val user = "auth_service"
             return UsernamePasswordAuthenticationToken(
                 user, null,

@@ -1,5 +1,7 @@
 package authorizationservice.resources.security
 
+import authorizationservice.domain.entities.Credentials
+import authorizationservice.domain.entities.Session
 import authorizationservice.domain.entities.User
 import authorizationservice.domain.repositories.UserRepository
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -25,8 +27,9 @@ class AuthenticationFilter(jwtUtil: JWTUtil, authenticationManager: Authenticati
     @Throws(AuthenticationException::class)
     override fun attemptAuthentication(request: HttpServletRequest, response: HttpServletResponse): Authentication {
         return try {
-            val user = ObjectMapper().readValue(request.inputStream, User::class.java)
-            val authToken = UsernamePasswordAuthenticationToken(user.email, user.password, ArrayList())
+            val user = ObjectMapper().readValue(request.inputStream, Credentials::class.java)
+            val authToken = UsernamePasswordAuthenticationToken(user.username, user.password, ArrayList())
+
             authenticationManager.authenticate(authToken)
         } catch (e: IOException) {
             throw RuntimeException()
@@ -36,12 +39,24 @@ class AuthenticationFilter(jwtUtil: JWTUtil, authenticationManager: Authenticati
     @Throws(IOException::class, ServletException::class)
     override fun successfulAuthentication(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain, authResult: Authentication) {
         val username: String = (authResult.principal as UserDetailsImpl).username
+
         val user = userRepository.findByEmail(username)
         val token = jwtUtil.generateToken(user?.personId)
+
         response.contentType = "application/json"
         response.writer.append(user.toString())
         response.addHeader("Authorization", "Bearer $token")
         response.addHeader("access-control-expose-headers", "Authorization")
+    }
+
+    private fun sessionDetails(request: HttpServletRequest, token: String, personId: String, username: String) {
+        val sessionUser = Session(
+            username = username,
+            personId = personId,
+            channel = request.getHeader("Channel"),
+            ip = request.getHeader("X-FORWARDED-FOR") ?: request.remoteAddr,
+            token = token
+        )
     }
 
     private inner class JWTAuthenticationFailureHandler : AuthenticationFailureHandler {
@@ -56,8 +71,8 @@ class AuthenticationFilter(jwtUtil: JWTUtil, authenticationManager: Authenticati
             val date = Date().time
             return ("{\"timestamp\": " + date + ", "
                     + "\"status\": 401, "
-                    + "\"error\": \"Não autorizado\", "
-                    + "\"message\": \"Email ou senha inválidos\", "
+                    + "\"error\": \"Unauthorized\", "
+                    + "\"message\": \"Email or password wrong\", "
                     + "\"path\": \"/login\"}")
         }
     }
