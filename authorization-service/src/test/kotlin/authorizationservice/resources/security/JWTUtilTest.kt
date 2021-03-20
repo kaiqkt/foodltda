@@ -14,7 +14,7 @@ class JWTUtilTest {
     @BeforeEach
     fun beforeEach() {
         userRepository = mockk(relaxed = true)
-        jwtUtil = JWTUtil("teste", "60000", userRepository)
+        jwtUtil = JWTUtil("test", "60000", userRepository)
     }
 
     @Test
