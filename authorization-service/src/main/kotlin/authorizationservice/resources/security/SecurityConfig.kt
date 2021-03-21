@@ -1,5 +1,6 @@
 package authorizationservice.resources.security
 
+import authorizationservice.domain.repositories.RedisSessionRepository
 import authorizationservice.domain.repositories.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -30,6 +31,9 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     @Autowired
     private lateinit var userRepository: UserRepository
 
+    @Autowired
+    private lateinit var redisSessionRepository: RedisSessionRepository
+
     @Value("\${token}")
     private lateinit var secret: String
 
@@ -39,7 +43,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
         http.authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/users").hasRole("ADM")
                 .anyRequest().authenticated()
-        http.addFilter(AuthenticationFilter(jwtUtil, authenticationManager(), userRepository))
+        http.addFilter(AuthenticationFilter(jwtUtil, authenticationManager(), userRepository, redisSessionRepository))
         http.addFilter(AuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService, secret))
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     }
