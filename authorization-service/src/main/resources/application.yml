@@ -12,3 +12,8 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:27018/authorization
+  chache:
+    type: redis
+  redis:
+    host: localhost
+    port: 6379

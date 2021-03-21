@@ -1,11 +1,9 @@
 package authorizationservice.resources.security
 
 import authorizationservice.domain.entities.Credentials
-import authorizationservice.domain.entities.Session
-import authorizationservice.domain.entities.User
+import authorizationservice.domain.entities.AuthSessionDetail
 import authorizationservice.domain.repositories.UserRepository
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.springframework.data.mongodb.util.BsonUtils.toJson
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -50,7 +48,7 @@ class AuthenticationFilter(jwtUtil: JWTUtil, authenticationManager: Authenticati
     }
 
     private fun sessionDetails(request: HttpServletRequest, token: String, personId: String, username: String) {
-        val sessionUser = Session(
+        val sessionUser = AuthSessionDetail(
             username = username,
             personId = personId,
             channel = request.getHeader("Channel"),

@@ -1,7 +1,6 @@
 package authorizationservice.domain.entities
 
-data class Session(
-    val _id: String? = null,
+data class AuthSessionDetail(
     val username: String,
     val personId: String,
     val channel: String,
