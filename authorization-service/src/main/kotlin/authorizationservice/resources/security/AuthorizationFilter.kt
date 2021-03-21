@@ -56,7 +56,6 @@ class AuthorizationFilter(
                 mutableListOf<GrantedAuthority>(SimpleGrantedAuthority("ROLE_ADM"))
             )
         }
-
         return null
     }
 

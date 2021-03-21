@@ -37,7 +37,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun `given a existing user email , should be return DataValidationException`() {
+    fun `given a existing user email, should be return DataValidationException`() {
         val user = UserFactory.sample()
         val error = listOf("Email: ${user.email} already use")
 

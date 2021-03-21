@@ -37,13 +37,17 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     @Value("\${token}")
     private lateinit var secret: String
 
+    @Value("\${redis.expiration}")
+    private lateinit var expiration: String
+
+
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
         http.cors().and().csrf().disable()
         http.authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/users").hasRole("ADM")
                 .anyRequest().authenticated()
-        http.addFilter(AuthenticationFilter(jwtUtil, authenticationManager(), userRepository, redisSessionRepository))
+        http.addFilter(AuthenticationFilter(jwtUtil, authenticationManager(), userRepository, redisSessionRepository, expiration))
         http.addFilter(AuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService, secret))
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     }

@@ -1,6 +1,5 @@
 package authorizationservice.doman.service
 
-import authorizationservice.domain.exceptions.DataValidationException
 import authorizationservice.domain.repositories.UserRepository
 import authorizationservice.domain.services.UserDetailsServiceImpl
 import authorizationservice.factories.UserFactory

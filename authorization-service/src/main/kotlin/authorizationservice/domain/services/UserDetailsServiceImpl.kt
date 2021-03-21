@@ -1,6 +1,5 @@
 package authorizationservice.domain.services
 
-import authorizationservice.domain.repositories.RedisSessionRepositoryImpl
 import authorizationservice.domain.repositories.UserRepository
 import authorizationservice.resources.security.UserDetailsImpl
 import org.slf4j.Logger

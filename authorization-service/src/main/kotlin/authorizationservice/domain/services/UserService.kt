@@ -1,18 +1,31 @@
 package authorizationservice.domain.services
 
+import authorizationservice.domain.entities.AuthSessionDetail
 import authorizationservice.domain.entities.User
 import authorizationservice.domain.exceptions.DataValidationException
+import authorizationservice.domain.repositories.RedisSessionRepository
 import authorizationservice.domain.repositories.UserRepository
+import authorizationservice.resources.security.JWTUtil
+import authorizationservice.resources.security.UserDetailsImpl
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 
 @Service
 class UserService(
     private val userRepository: UserRepository,
-    private val bCryptPasswordEncoder: BCryptPasswordEncoder
+    private val bCryptPasswordEncoder: BCryptPasswordEncoder,
+    private val jwtUtil: JWTUtil,
+    private val redisSessionRepository: RedisSessionRepository
 ) {
+
+    @Value("\${redis.expiration}")
+    private lateinit var expiration: String
 
     private companion object {
         val logger: Logger = LoggerFactory.getLogger(UserService::class.java)

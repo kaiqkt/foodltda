@@ -28,7 +28,8 @@ class AuthenticationFilter(
     jwtUtil: JWTUtil,
     authenticationManager: AuthenticationManager,
     userRepository: UserRepository,
-    redisSessionRepository: RedisSessionRepository
+    redisSessionRepository: RedisSessionRepository,
+    expiration: String
 ) : UsernamePasswordAuthenticationFilter() {
 
     private companion object {
@@ -38,6 +39,7 @@ class AuthenticationFilter(
     private val jwtUtil: JWTUtil
     private val userRepository: UserRepository
     private val redisRepository: RedisSessionRepository
+    private val expiration: String
 
     @Throws(AuthenticationException::class)
     override fun attemptAuthentication(request: HttpServletRequest, response: HttpServletResponse): Authentication {
@@ -80,9 +82,10 @@ class AuthenticationFilter(
         val sessionUser = AuthSessionDetail(
             username = username,
             personId = personId!!,
-            channel = request.getHeader("Channel"),
+            channel = request.getHeader("Channel"), // CRIAR O ENUM CHANNEL
             ip = request.getHeader("X-FORWARDED-FOR") ?: request.remoteAddr,
-            token = token
+            token = token,
+            expiration = expiration.toLong()
         )
 
         redisRepository.createSession(sessionUser)
@@ -116,5 +119,6 @@ class AuthenticationFilter(
         this.authenticationManager = authenticationManager
         this.userRepository = userRepository
         this.redisRepository =  redisSessionRepository
+        this.expiration = expiration
     }
 }
