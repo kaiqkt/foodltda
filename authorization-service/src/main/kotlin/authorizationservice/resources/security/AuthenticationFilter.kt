@@ -1,14 +1,10 @@
 package authorizationservice.resources.security
 
-import authorizationservice.domain.entities.Credentials
 import authorizationservice.domain.entities.AuthSessionDetail
-import authorizationservice.domain.exceptions.DataValidationException
+import authorizationservice.domain.entities.Login
 import authorizationservice.domain.repositories.RedisSessionRepository
 import authorizationservice.domain.repositories.UserRepository
-import authorizationservice.domain.services.UserService
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -16,13 +12,11 @@ import org.springframework.security.core.AuthenticationException
 import org.springframework.security.web.authentication.AuthenticationFailureHandler
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import java.io.IOException
-import java.lang.RuntimeException
 import java.util.*
 import javax.servlet.FilterChain
 import javax.servlet.ServletException
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
-import kotlin.jvm.Throws
 
 class AuthenticationFilter(
     jwtUtil: JWTUtil,
@@ -32,10 +26,6 @@ class AuthenticationFilter(
     expiration: String
 ) : UsernamePasswordAuthenticationFilter() {
 
-    private companion object {
-        val logger: Logger = LoggerFactory.getLogger(AuthenticationFilter::class.java)
-    }
-
     private val jwtUtil: JWTUtil
     private val userRepository: UserRepository
     private val redisRepository: RedisSessionRepository
@@ -43,14 +33,13 @@ class AuthenticationFilter(
 
     @Throws(AuthenticationException::class)
     override fun attemptAuthentication(request: HttpServletRequest, response: HttpServletResponse): Authentication {
-        val user = ObjectMapper().readValue(request.inputStream, Credentials::class.java)
         return try {
-            val authToken = UsernamePasswordAuthenticationToken(user.username, user.password, ArrayList())
+            val user = ObjectMapper().readValue(request.inputStream, Login::class.java)
+            val authToken = UsernamePasswordAuthenticationToken(user.email, user.password, ArrayList())
 
-            logger.info("Authenticate user: ${user.username}")
+            logger.info("Authenticate user: ${user.email}")
             authenticationManager.authenticate(authToken)
         } catch (e: IOException) {
-            logger.error("Authenticate error user: ${user.username}")
             //ALTERAR AQUI
             throw RuntimeException()
         }

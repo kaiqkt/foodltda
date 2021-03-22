@@ -27,9 +27,9 @@ class UserDetailsServiceTest {
         val user = UserFactory.sample()
         val userDetails = UserDetailsImpl(user)
 
-        every { userRepository.findByEmail(user.email) } returns user
+        every { userRepository.findByPersonId(user.personId) } returns user
 
-        val response = userDetailsService.loadUserByUsername(user.email)
+        val response = userDetailsService.loadUserByUsername(user.personId)
 
         Assertions.assertEquals(userDetails.username, response.username)
         Assertions.assertEquals(userDetails.password, response.password)
@@ -38,12 +38,12 @@ class UserDetailsServiceTest {
     @Test
     fun `given a invalid user, should be return UsernameNotFoundException`() {
         val user = UserFactory.sample()
-        val error = "User:${user.email} not found"
+        val error = "User:${user.personId} not found"
 
-        every { userRepository.findByEmail(user.email) } returns null
+        every { userRepository.findByPersonId(user.personId) } returns null
 
         val response = assertThrows<UsernameNotFoundException> {
-            userDetailsService.loadUserByUsername(user.email)
+            userDetailsService.loadUserByUsername(user.personId)
         }
 
         Assertions.assertEquals(error, response.message)

@@ -1,6 +1,5 @@
 package authorizationservice.application.controller
 
-import authorizationservice.application.controller.UserController
 import authorizationservice.application.dto.toDomain
 import authorizationservice.domain.services.UserService
 import authorizationservice.factories.UserFactory

@@ -3,7 +3,6 @@ package authorizationservice.application.dto
 import authorizationservice.domain.entities.Phone
 import authorizationservice.domain.entities.User
 import javax.validation.constraints.NotEmpty
-import javax.validation.constraints.NotNull
 import javax.validation.constraints.Pattern
 
 data class UserRequest(
@@ -14,11 +13,17 @@ data class UserRequest(
     @get:NotEmpty(message = "Email cannot be empty.")
     val email: String = "",
     @get:NotEmpty(message = "Password cannot be empty.")
-    //Mínimo de oito caracteres, pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial:
-    @Pattern(regexp = "\"(?=.*[az])(?=.*[AZ])(?=.*\\d)(?=.*[\$@!%*?&])[A-Za-z\\d\$@!%*?&]{8,}\"", message = "Strong password required")
+//    @get:Pattern(regexp = "^(?=.*[A-Z].*[A-Z])(?=.*[!@#\$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8}\$", message = "Wrong password required")
     val password: String = "",
-    @get:NotNull(message = "PostalCode cannot be empty.")
-    val phone: Phone? = null
+    @get:NotEmpty(message = "Country Code cannot be empty.")
+    @get:Pattern(regexp = "\\+?[0-9]{2}", message = "Country code invalid")
+    val countryCode: String = "",
+    @get:NotEmpty(message = "Area Code cannot be empty.")
+    @get:Pattern(regexp = "[0-9]{2}", message = "Area code invalid")
+    val areaCode: String = "",
+    @get:NotEmpty(message = "Phone Number cannot be empty.")
+    @get:Pattern(regexp = "[0-9]{9}", message = "Number invalid")
+    val phoneNumber: String = ""
 )
 
 fun UserRequest.toDomain() = User(
@@ -26,5 +31,19 @@ fun UserRequest.toDomain() = User(
     name = this.name,
     email = this.email,
     password = this.password,
-    phone = this.phone
+    phone = this.toPhone()
 )
+
+fun UserRequest.toPhone() = Phone(
+    countryCode = this.countryCode,
+    areaCode = this.areaCode,
+    number = this.phoneNumber
+)
+
+//^                         Start anchor
+//(?=.*[A-Z].*[A-Z])        Ensure string has two uppercase letters.
+//(?=.*[!@#$&*])            Ensure string has one special case letter.
+//(?=.*[0-9].*[0-9])        Ensure string has two digits.
+//(?=.*[a-z].*[a-z].*[a-z]) Ensure string has three lowercase letters.
+//.{8}                      Ensure string is of length 8.
+//$                         End anchor.

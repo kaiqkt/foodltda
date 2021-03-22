@@ -11,7 +11,7 @@ import javax.validation.constraints.Email
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Pattern
-
+//arrumar esses regex
 class IndividualRequest(
     @get:NotEmpty(message = "Name cannot be empty.")
     val name: String = "",

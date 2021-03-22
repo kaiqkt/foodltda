@@ -15,10 +15,10 @@ class UserDetailsServiceImpl(private val userRepository: UserRepository): UserDe
         val logger: Logger = LoggerFactory.getLogger(UserDetailsServiceImpl::class.java)
     }
 
-    override fun loadUserByUsername(email: String?): UserDetails {
-        val user = userRepository.findByEmail(email) ?: throw UsernameNotFoundException("User:$email not found")
+    override fun loadUserByUsername(personId: String?): UserDetails {
+        val user = userRepository.findByPersonId(personId) ?: throw UsernameNotFoundException("User:$personId not found")
 
-        logger.info("Load user by username:$email")
+        logger.info("Load user by username:$personId")
 
         return UserDetailsImpl(user)
     }

@@ -12,7 +12,7 @@ import javax.validation.constraints.Email
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Pattern
-
+//arrumar esses regex
 class LegalRequest(
     @get:NotEmpty(message = "BusinessName cannot be empty.")
     val businessName: String = "",

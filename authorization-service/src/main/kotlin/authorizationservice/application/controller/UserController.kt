@@ -24,4 +24,7 @@ class UserController(private val userService: UserService) {
         return ResponseEntity<User>(userService.create(user.toDomain()), HttpStatus.CREATED)
     }
 
+    @GetMapping
+    fun teste() = "foi"
+    //update password
 }

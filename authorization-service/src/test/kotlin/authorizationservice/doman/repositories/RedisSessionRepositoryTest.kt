@@ -26,6 +26,7 @@ class RedisSessionRepositoryTest {
         redisSessionRepositoryImpl = RedisSessionRepositoryImpl(redisConfig)
     }
 
+
     @Test
     fun `given a valid auth details, should be save in redis store with successful`() {
         val authDetail = AuthSessionDetailFactory.sample()

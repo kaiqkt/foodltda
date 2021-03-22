@@ -19,13 +19,8 @@ import javax.servlet.http.HttpServletResponse
 @Service
 class UserService(
     private val userRepository: UserRepository,
-    private val bCryptPasswordEncoder: BCryptPasswordEncoder,
-    private val jwtUtil: JWTUtil,
-    private val redisSessionRepository: RedisSessionRepository
+    private val bCryptPasswordEncoder: BCryptPasswordEncoder
 ) {
-
-    @Value("\${redis.expiration}")
-    private lateinit var expiration: String
 
     private companion object {
         val logger: Logger = LoggerFactory.getLogger(UserService::class.java)
