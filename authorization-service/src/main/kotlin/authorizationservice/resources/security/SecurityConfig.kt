@@ -46,6 +46,8 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
         http.cors().and().csrf().disable()
         http.authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/users").hasRole("ADM")
+                .antMatchers(HttpMethod.POST, "/users/save").permitAll()
+                .antMatchers(HttpMethod.POST, "/users/findall").permitAll()
                 .anyRequest().authenticated()
         http.addFilter(AuthenticationFilter(jwtUtil, authenticationManager(), userRepository, redisSessionRepository, expiration))
         http.addFilter(AuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService, secret))

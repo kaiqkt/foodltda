@@ -1,13 +1,15 @@
 package authorizationservice.domain.entities
 
+import java.io.Serializable
 import java.util.concurrent.TimeUnit
 
-data class AuthSessionDetail(
+data class AuthSession(
+    val userId: String?,
     val username: String?,
-    val personId: String,
-    val channel: String,
+    val personId: String?,
+    val channel: Channel,
     val ip: String,
     val token: String,
     val expiration: Long,
-    val timeUnit: TimeUnit = TimeUnit.HOURS
-)
+    val timeUnit: TimeUnit
+): Serializable

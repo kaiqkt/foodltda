@@ -16,9 +16,10 @@ class JWTUtil(
     private val userRepository: UserRepository
 ) {
 
-    fun generateToken(personId: String?): String {
+    fun generateToken(personId: String?, email: String?): String {
         return Jwts.builder()
-            .setSubject(personId)
+            .setId(personId)
+            .setSubject(email)
             .setExpiration(Date(System.currentTimeMillis() + expiration.toLong()))
             .signWith(SignatureAlgorithm.HS512, secret.toByteArray())
             .compact()
@@ -27,22 +28,23 @@ class JWTUtil(
     fun validToken(token: String): Boolean {
         val claims = getClaims(token)
         if (claims != null) {
-            val personId = claims.subject
+            val personId = claims.id
+            val email = claims.subject
             val expirationDate = claims.expiration
             val now = Date(System.currentTimeMillis())
-            return personId != null && expirationDate != null && now.before(expirationDate) && userRepository.existsByPersonId(personId)
+            return personId != null && expirationDate != null && now.before(expirationDate) && userRepository.existsByPersonId(personId) && userRepository.existsByEmail(email)
         }
         return false
     }
 
     fun getPersonId(token: String): String? {
         val claims = getClaims(token)
-        return claims?.subject
+        return claims?.id
     }
 
-    fun getUserId(token: String): String? {
+    fun getUsername(token: String): String? {
         val claims = getClaims(token)
-        return claims?.id
+        return claims?.subject
     }
 
     private fun getClaims(token: String): Claims? {

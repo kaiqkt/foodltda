@@ -1,8 +1,6 @@
 package authorizationservice.application.handler
 
-import authorizationservice.domain.exceptions.DataValidationException
-import authorizationservice.domain.exceptions.InvalidTokenException
-import authorizationservice.domain.exceptions.ResultBindingException
+import authorizationservice.domain.exceptions.*
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -42,14 +40,14 @@ class ErrorHandlerTest {
         val expectedDetails = emptyList<String>()
         val dataValidationException = DataValidationException(expectedDetails)
 
-        val response = errorHandler.handleDataAlreadyInUseException(dataValidationException, request)
+        val response = errorHandler.handleDataValidationException(dataValidationException, request)
 
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.statusCode)
         Assertions.assertNotNull(response)
     }
 
     @Test
-    fun `given an errorHandler when handling a UsernameNotFoundException should return HTTP status 400`() {
+    fun `given an errorHandler when handling a UsernameNotFoundException should return HTTP status 403`() {
         val request = webRequest
 
         val errorHandler = ErrorHandler()
@@ -63,7 +61,7 @@ class ErrorHandlerTest {
     }
 
     @Test
-    fun `given an errorHandler when handling a InvalidTokenException should return HTTP status 400`() {
+    fun `given an errorHandler when handling a InvalidTokenException should return HTTP status 401`() {
         val request = webRequest
 
         val errorHandler = ErrorHandler()
@@ -73,6 +71,34 @@ class ErrorHandlerTest {
         val response = errorHandler.handleInvalidTokenException(invalidTokenException, request)
 
         Assertions.assertEquals(HttpStatus.UNAUTHORIZED, response.statusCode)
+        Assertions.assertNotNull(response)
+    }
+
+    @Test
+    fun `given an errorHandler when handling a LoginException should return HTTP status 403`() {
+        val request = webRequest
+
+        val errorHandler = ErrorHandler()
+        val expectedError = "error"
+        val invalidLoginException = LoginException(expectedError)
+
+        val response = errorHandler.handleLoginException(invalidLoginException, request)
+
+        Assertions.assertEquals(HttpStatus.FORBIDDEN, response.statusCode)
+        Assertions.assertNotNull(response)
+    }
+
+    @Test
+    fun `given an errorHandler when handling a SessionException should return HTTP status 400`() {
+        val request = webRequest
+
+        val errorHandler = ErrorHandler()
+        val expectedError = "error"
+        val invalidSessionException = SessionException(expectedError)
+
+        val response = errorHandler.handleSessionException(invalidSessionException, request)
+
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.statusCode)
         Assertions.assertNotNull(response)
     }
 }

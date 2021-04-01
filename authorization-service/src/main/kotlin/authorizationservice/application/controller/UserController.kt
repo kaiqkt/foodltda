@@ -7,8 +7,6 @@ import authorizationservice.domain.entities.User
 import authorizationservice.domain.services.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.annotation.Secured
-import org.springframework.security.config.web.servlet.SecurityMarker
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
@@ -23,8 +21,5 @@ class UserController(private val userService: UserService) {
 
         return ResponseEntity<User>(userService.create(user.toDomain()), HttpStatus.CREATED)
     }
-
-    @GetMapping
-    fun teste() = "foi"
     //update password
 }

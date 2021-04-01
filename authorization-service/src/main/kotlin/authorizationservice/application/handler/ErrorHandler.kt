@@ -1,8 +1,6 @@
 package authorizationservice.application.handler
 
-import authorizationservice.domain.exceptions.DataValidationException
-import authorizationservice.domain.exceptions.InvalidTokenException
-import authorizationservice.domain.exceptions.ResultBindingException
+import authorizationservice.domain.exceptions.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -18,11 +16,14 @@ import java.time.LocalDateTime
 @ControllerAdvice
 class ErrorHandler : ResponseEntityExceptionHandler() {
 
-    private companion object val logger: Logger = LoggerFactory.getLogger(ErrorHandler::class.java.name)
+    private companion object
+
+    val logger: Logger = LoggerFactory.getLogger(ErrorHandler::class.java.name)
 
     @ExceptionHandler(ResultBindingException::class)
     fun handleResultBindingException(
-        ex: ResultBindingException, request: WebRequest): ResponseEntity<Any> {
+        ex: ResultBindingException, request: WebRequest
+    ): ResponseEntity<Any> {
         val uri: List<String> = request.getDescription(true).split(";")
         logger.error("result binding exception error: $uri")
 
@@ -33,8 +34,9 @@ class ErrorHandler : ResponseEntityExceptionHandler() {
     }
 
     @ExceptionHandler(DataValidationException::class)
-    fun handleDataAlreadyInUseException(
-        ex: DataValidationException, request: WebRequest): ResponseEntity<Any> {
+    fun handleDataValidationException(
+        ex: DataValidationException, request: WebRequest
+    ): ResponseEntity<Any> {
         val uri: List<String> = request.getDescription(true).split(";")
         logger.error("data validation exception error: $uri")
 
@@ -46,7 +48,8 @@ class ErrorHandler : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(UsernameNotFoundException::class)
     fun handleUsernameNotFoundException(
-        ex: UsernameNotFoundException, request: WebRequest): ResponseEntity<Any> {
+        ex: UsernameNotFoundException, request: WebRequest
+    ): ResponseEntity<Any> {
         val uri: List<String> = request.getDescription(true).split(";")
         logger.error("username not found exception error: $uri")
 
@@ -58,14 +61,41 @@ class ErrorHandler : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(InvalidTokenException::class)
     fun handleInvalidTokenException(
-        ex: InvalidTokenException, request: WebRequest): ResponseEntity<Any> {
+        ex: InvalidTokenException, request: WebRequest
+    ): ResponseEntity<Any> {
         val uri: List<String> = request.getDescription(true).split(";")
-        logger.error("invalid token exception error: $uri")
+        logger.error("token exception error: $uri")
 
         val body: MutableMap<String, Any> = LinkedHashMap()
         body["timestamp"] = LocalDateTime.now()
         body["message"] = ex.message
         return ResponseEntity(body, HttpStatus.UNAUTHORIZED)
+    }
+
+    @ExceptionHandler(LoginException::class)
+    fun handleLoginException(
+        ex: LoginException, request: WebRequest
+    ): ResponseEntity<Any> {
+        val uri: List<String> = request.getDescription(true).split(";")
+        logger.error("login exception error: $uri")
+
+        val body: MutableMap<String, Any> = LinkedHashMap()
+        body["timestamp"] = LocalDateTime.now()
+        body["message"] = ex.message!!
+        return ResponseEntity(body, HttpStatus.FORBIDDEN)
+    }
+
+    @ExceptionHandler(SessionException::class)
+    fun handleSessionException(
+        ex: SessionException, request: WebRequest
+    ): ResponseEntity<Any> {
+        val uri: List<String> = request.getDescription(true).split(";")
+        logger.error("session exception error: $uri")
+
+        val body: MutableMap<String, Any> = LinkedHashMap()
+        body["timestamp"] = LocalDateTime.now()
+        body["message"] = ex.message!!
+        return ResponseEntity(body, HttpStatus.BAD_REQUEST)
     }
 
 }

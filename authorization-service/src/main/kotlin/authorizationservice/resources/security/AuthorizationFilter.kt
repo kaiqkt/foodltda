@@ -41,8 +41,8 @@ class AuthorizationFilter(
 
     private fun getJWTAuthentication(token: String): UsernamePasswordAuthenticationToken? {
         if (jwtUtil.validToken(token)) {
-            val personId = jwtUtil.getPersonId(token)
-            val user = userDetailsService.loadUserByUsername(personId)
+            val username = jwtUtil.getUsername(token)
+            val user = userDetailsService.loadUserByUsername(username)
             return UsernamePasswordAuthenticationToken(user, null, user.authorities)
         }
         return null
