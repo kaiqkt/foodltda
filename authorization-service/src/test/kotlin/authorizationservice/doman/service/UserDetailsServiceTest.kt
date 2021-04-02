@@ -1,7 +1,7 @@
 package authorizationservice.doman.service
 
 import authorizationservice.domain.repositories.UserRepository
-import authorizationservice.domain.services.UserDetailsServiceImpl
+import authorizationservice.resources.security.UserDetailsServiceImpl
 import authorizationservice.factories.UserFactory
 import authorizationservice.resources.security.UserDetailsImpl
 import io.mockk.every

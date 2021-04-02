@@ -43,6 +43,11 @@
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-jdk8</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <version>3.0.2</version>
+        </dependency>
         <!--		<dependency>-->
         <!--			<groupId>org.springframework.cloud</groupId>-->
         <!--			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>-->
@@ -63,6 +68,11 @@
             <artifactId>mockk</artifactId>
             <version>1.10.2</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.7.0</version>
         </dependency>
         <dependency>
             <groupId>org.junit.platform</groupId>
@@ -136,6 +146,7 @@
                         <exclude>**/application/dto/**</exclude>
                         <exclude>**/SingleRegistryServiceApplication**</exclude>
                         <exclude>**/application/validation/**</exclude>
+                        <exclude>**/resources/security/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>

@@ -6,6 +6,7 @@ token: 123SINGLE56
 jwt.secret: mysecret
 jwt.expiration: 7200000
 redis.expiration: 2
+redis.key: session_user
 
 spring:
   application:

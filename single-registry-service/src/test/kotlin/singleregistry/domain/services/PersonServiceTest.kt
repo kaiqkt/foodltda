@@ -6,14 +6,10 @@ import io.mockk.verify
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
-import singleregistry.application.dto.PersonResponse
 import singleregistry.domain.entities.person.PersonType
-import singleregistry.domain.exceptions.PersonNotFoundException
 import singleregistry.domain.repositories.IndividualRepository
 import singleregistry.domain.repositories.LegalRepository
 import singleregistry.domain.repositories.PersonRepository
-import singleregistry.factories.LegalFactory
 import singleregistry.factories.PersonFactory
 
 class PersonServiceTest {
@@ -33,55 +29,36 @@ class PersonServiceTest {
     @Test
     fun `given a valid person id, should return a legal person`() {
         val person = PersonFactory.sample(personType = PersonType.PJ)
-        val personId = "0001"
 
-        every { personRepository.findByPersonId(any()) } returns person
+        every { personRepository.findByEmail(person.email) } returns person
 
-        val response = personService.findByPersonId(personId)
+        val response = personService.findByPersonId()
 
-        verify { personRepository.findByPersonId(personId) }
+        verify { personRepository.findByEmail(any()) }
         Assertions.assertNotNull(response)
     }
 
     @Test
     fun `given a valid person id, should return a individual person`() {
         val person = PersonFactory.sample(personType = PersonType.PF)
-        val personId = "0001"
 
-        every { personRepository.findByPersonId(any()) } returns person
+        every { personRepository.findByEmail(person.email) } returns person
 
-        val response = personService.findByPersonId(personId)
+        val response = personService.findByPersonId()
 
-        verify { personRepository.findByPersonId(personId) }
+        verify { personRepository.findByEmail(any()) }
         Assertions.assertNotNull(response)
     }
 
-    @Test
-    fun `given a invalid person id, should return a exception`() {
-        val personId = "0001"
-        val error = "Person not found by id: $personId"
-
-        every { personRepository.findByPersonId(any()) } returns null
-
-        val response = assertThrows<PersonNotFoundException> {
-            personService.findByPersonId(personId)
-        }
-
-        Assertions.assertEquals(error, response.message)
-    }
 
     @Test
     fun `given a invalid person type, should return a exception`() {
-        val person = PersonFactory.sample(personType = null)
-        val error = "Invalid person type: ${person.type}"
-        val personId = "0001"
+        val email = "teste@test.com"
 
-        every { personRepository.findByPersonId(any()) } returns person
+        every { personRepository.findByEmail(email) } returns null
 
-        val response = assertThrows<IllegalArgumentException> {
-            personService.findByPersonId(personId)
-        }
+        val response = personService.findByPersonId()
 
-        Assertions.assertEquals(error, response.message)
+        Assertions.assertNull(response)
     }
 }

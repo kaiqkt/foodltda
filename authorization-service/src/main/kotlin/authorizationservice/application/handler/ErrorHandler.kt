@@ -59,19 +59,6 @@ class ErrorHandler : ResponseEntityExceptionHandler() {
         return ResponseEntity(body, HttpStatus.FORBIDDEN)
     }
 
-    @ExceptionHandler(InvalidTokenException::class)
-    fun handleInvalidTokenException(
-        ex: InvalidTokenException, request: WebRequest
-    ): ResponseEntity<Any> {
-        val uri: List<String> = request.getDescription(true).split(";")
-        logger.error("token exception error: $uri")
-
-        val body: MutableMap<String, Any> = LinkedHashMap()
-        body["timestamp"] = LocalDateTime.now()
-        body["message"] = ex.message
-        return ResponseEntity(body, HttpStatus.UNAUTHORIZED)
-    }
-
     @ExceptionHandler(LoginException::class)
     fun handleLoginException(
         ex: LoginException, request: WebRequest

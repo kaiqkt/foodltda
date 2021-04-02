@@ -2,15 +2,20 @@ package authorizationservice.domain.services
 
 import authorizationservice.domain.entities.User
 import authorizationservice.domain.exceptions.DataValidationException
+import authorizationservice.domain.repositories.RedisSessionRepository
 import authorizationservice.domain.repositories.UserRepository
+import authorizationservice.resources.security.JWTUtil
+import authorizationservice.resources.security.UserDetailsImpl
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
 class UserService(
     private val userRepository: UserRepository,
+    private val redisSessionRepository: RedisSessionRepository,
     private val bCryptPasswordEncoder: BCryptPasswordEncoder
 ) {
 
@@ -29,6 +34,20 @@ class UserService(
         logger.info("User[${newUser._id}] with mongo database created")
 
         return newUser
+    }
+
+    fun deleteSession() {
+        val user = userRepository.findByEmail(authenticated()?.username)
+
+        redisSessionRepository.deleteSession(user?._id)
+    }
+
+    private fun authenticated(): UserDetailsImpl? {
+        return try {
+            SecurityContextHolder.getContext().authentication.principal as UserDetailsImpl
+        } catch (e: Exception) {
+            null
+        }
     }
 
     private fun validateDate(user: User) {

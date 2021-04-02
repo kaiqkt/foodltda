@@ -13,7 +13,7 @@ data class UserRequest(
     @get:NotEmpty(message = "Email cannot be empty.")
     val email: String = "",
     @get:NotEmpty(message = "Password cannot be empty.")
-//    @get:Pattern(regexp = "^(?=.*[A-Z].*[A-Z])(?=.*[!@#\$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8}\$", message = "Wrong password required")
+    @get:Pattern(regexp = "^(?=.*[A-Z].*[A-Z])(?=.*[!@#\$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8}\$", message = "Wrong password required")
     val password: String = "",
     @get:NotEmpty(message = "Country Code cannot be empty.")
     @get:Pattern(regexp = "\\+?[0-9]{2}", message = "Country code invalid")

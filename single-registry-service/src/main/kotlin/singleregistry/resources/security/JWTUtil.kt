@@ -1,18 +1,18 @@
-package authorizationservice.resources.security
+package singleregistry.resources.security
 
-import authorizationservice.domain.repositories.UserRepository
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import singleregistry.domain.repositories.PersonRepository
 import java.util.*
 
 @Component
 class JWTUtil(
     @Value("\${jwt.secret}") private var secret: String,
     @Value("\${jwt.expiration}") private var expiration: String,
-    private val userRepository: UserRepository
+    private val personRepository: PersonRepository
 ) {
 
     fun generateToken(personId: String?, email: String?): String {
@@ -31,7 +31,7 @@ class JWTUtil(
             val email = claims.subject
             val expirationDate = claims.expiration
             val now = Date(System.currentTimeMillis())
-            return personId != null && expirationDate != null && now.before(expirationDate) && userRepository.existsByPersonId(personId) && userRepository.existsByEmail(email)
+            return personId != null && expirationDate != null && now.before(expirationDate) && personRepository.existsByPersonId(personId) && personRepository.existsByEmail(email)
         }
         return false
     }

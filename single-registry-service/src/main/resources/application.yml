@@ -1,7 +1,10 @@
 server:
   port: 8083
 
+jwt.secret: mysecret
+jwt.expiration: 7200000
 token: 123SINGLE56
+authorization_token: 123SINGLE56
 
 spring:
   application:

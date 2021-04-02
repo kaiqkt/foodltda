@@ -4,38 +4,49 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import singleregistry.domain.entities.individual.Individual
+import singleregistry.resources.authorization.entities.User
 import singleregistry.domain.exceptions.DataValidationException
-import singleregistry.domain.exceptions.IndividualPersonNotFoundException
-import singleregistry.domain.exceptions.LegalPersonNotFoundException
 import singleregistry.domain.repositories.IndividualRepository
 import singleregistry.domain.repositories.PersonRepository
+import singleregistry.resources.authorization.gateways.AuthorizationServiceImpl
 
 @Service
 class IndividualService(
     private val personRepository: PersonRepository,
-    private val individualRepository: IndividualRepository
+    private val individualRepository: IndividualRepository,
+    private val authorizationServiceImpl: AuthorizationServiceImpl
 ) {
 
     private companion object {
         val logger: Logger = LoggerFactory.getLogger(IndividualService::class.java.name)
     }
 
-    fun create(individual: Individual): Individual {
+    fun create(individual: Individual, password: String): Individual {
         validateDate(individual)
 
-        logger.info("Creating individual person")
 
         personRepository.save(individual.person).also { person ->
             val newIndividual = individualRepository.save(individual.copy(person = person))
-            logger.info("Individual[${newIndividual._id}] with mongo database created")
 
+            val user = User(
+                personId = person.personId,
+                name = newIndividual.name,
+                email = person.email,
+                password = password,
+                countryCode = person.phone?.countryCode,
+                areaCode = person.phone?.areaCode,
+                phoneNumber = person.phone?.number
+            )
+
+            authorizationServiceImpl.register(user)
+
+            logger.info("Individual[${newIndividual._id}] created ")
             return newIndividual
         }
 
     }
 
-    fun findByCpf(cpf: String) =
-        individualRepository.findByCpf(cpf) ?: throw IndividualPersonNotFoundException("Person not found by cpf: $cpf")
+    fun findByCpf(cpf: String) = individualRepository.findByCpf(cpf)
 
     private fun validateDate(individual: Individual) {
         val error = mutableListOf<String>()

@@ -5,17 +5,16 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
-import java.util.*
+import singleregistry.domain.repositories.PersonRepository
+import singleregistry.resources.security.config.AuthorizationFilter
 
 
 @Configuration
@@ -23,6 +22,10 @@ import java.util.*
 class SecurityConfig : WebSecurityConfigurerAdapter() {
     @Autowired
     private lateinit var userDetailsService: UserDetailsService
+
+    @Autowired
+    private lateinit var jwtUtil: JWTUtil
+
 
     @Value("\${token}")
     private lateinit var secret: String
@@ -32,9 +35,10 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
         print(secret)
         http.cors().and().csrf().disable()
         http.authorizeRequests()
+            .antMatchers(HttpMethod.GET, *GET_MATCHER_ADM).hasRole("ADM")
             .antMatchers(HttpMethod.POST, *POST_MATCHERS).permitAll()
             .anyRequest().authenticated()
-        http.addFilter(AuthorizationFilter(authenticationManager(), secret))
+        http.addFilter(AuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService, secret))
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     }
 
@@ -42,7 +46,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val cors = CorsConfiguration().applyPermitDefaultValues()
-        cors.allowedMethods = Arrays.asList("POST", "GET", "PUT", "DELETE", "OPTIONS")
+        cors.allowedMethods = listOf("POST", "GET", "PUT", "DELETE", "OPTIONS")
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", cors)
         return source
@@ -53,5 +57,11 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             "/individual",
             "/legal"
         )
+
+        private val GET_MATCHER_ADM = arrayOf(
+            "/individual",
+            "/legal"
+        )
     }
+
 }

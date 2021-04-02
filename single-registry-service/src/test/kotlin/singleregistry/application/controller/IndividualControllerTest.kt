@@ -15,8 +15,6 @@ import singleregistry.domain.exceptions.ResultBindingException
 import singleregistry.domain.services.IndividualService
 import singleregistry.factories.IndividualFactory
 import singleregistry.factories.IndividualRequestFactory
-import singleregistry.factories.LegalFactory
-import singleregistry.factories.LegalRequestFactory
 
 class IndividualControllerTest {
     private lateinit var individualService: IndividualService
@@ -35,11 +33,11 @@ class IndividualControllerTest {
         val request = IndividualRequestFactory.sample()
         val individual = IndividualFactory.sample()
 
-        every { individualService.create(request.toDomain()) } returns individual
+        every { individualService.create(request.toDomain(), request.password) } returns individual
 
         val controller = individualController.register(request, result)
 
-        verify { individualService.create(any()) }
+        verify { individualService.create(any(), any()) }
         Assertions.assertEquals(HttpStatus.CREATED, controller.statusCode)
     }
 

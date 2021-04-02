@@ -9,6 +9,7 @@ object IndividualRequestFactory {
         nickname = "kaique",
         cpf = "221.670.888-76",
         email = "test@test.com",
+        password = "teste",
         street = "Rua ABC de D",
         number = "75",
         complement = "AP22",

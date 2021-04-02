@@ -9,5 +9,5 @@ import singleregistry.domain.entities.person.Phone
 interface LegalRepository: MongoRepository<Legal, String> {
     fun existsByCnpj(cnpj: String?): Boolean
     fun findByCnpj(cnpj: String): Legal?
-    fun findByPersonPersonId(personId: String): Legal?
+    fun findByPersonPersonId(personId: String?): Legal?
 }

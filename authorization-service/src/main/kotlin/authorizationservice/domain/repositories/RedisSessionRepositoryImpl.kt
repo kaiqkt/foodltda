@@ -5,14 +5,17 @@ import authorizationservice.domain.entities.Channel
 import authorizationservice.domain.exceptions.SessionException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.redis.core.HashOperations
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Repository
 import java.util.concurrent.TimeUnit
 
 @Repository
-class RedisSessionRepositoryImpl (private val redisTemplate: RedisTemplate<String, AuthSession>) :
-    RedisSessionRepository {
+class RedisSessionRepositoryImpl(
+    private val redisTemplate: RedisTemplate<String, AuthSession>,
+    @Value("\${redis.key}") private var key: String
+) : RedisSessionRepository {
 
     private var hashOperations: HashOperations<String, String, AuthSession> = redisTemplate.opsForHash()
 
@@ -21,7 +24,6 @@ class RedisSessionRepositoryImpl (private val redisTemplate: RedisTemplate<Strin
     }
 
     override fun createSession(auth: AuthSession) {
-        val key = generateKey(auth.channel, auth.username)
         val expiration = auth.expiration
         try {
             hashOperations.put(key, auth.userId!!, auth)
@@ -32,28 +34,16 @@ class RedisSessionRepositoryImpl (private val redisTemplate: RedisTemplate<Strin
         }
     }
 
-    override fun findSession(channel: Channel, username: String?, userId: String?): AuthSession? {
-        val key = generateKey(channel, username)
+    override fun findSession(userId: String?): AuthSession? {
         try {
-            return hashOperations.get(key,userId!!)
+            return hashOperations.get(key, userId!!)
         } catch (ex: Exception) {
             logger.error("Find session error [key:$key]")
             throw SessionException(ex.message)
         }
     }
 
-    override fun findSessions(channel: Channel, username: String?): MutableMap<String, AuthSession> {
-        val key = generateKey(channel, username)
-        return try {
-            hashOperations.entries(key)
-        } catch (ex: Exception) {
-            logger.error("Delete sessions error [key:$key]")
-            throw SessionException(ex.message)
-        }
-    }
-
-    override fun deleteSession(channel: Channel, username: String?, userId: String?) {
-        val key = generateKey(channel, username)
+    override fun deleteSession(userId: String?) {
         try {
             hashOperations.delete(key, userId)
         } catch (ex: Exception) {
@@ -61,18 +51,5 @@ class RedisSessionRepositoryImpl (private val redisTemplate: RedisTemplate<Strin
             throw SessionException(ex.message)
         }
     }
-
-    override fun deleteSessions(channel: Channel, username: String?) {
-        val key = generateKey(channel, username)
-        try {
-           redisTemplate.delete(key)
-        } catch (ex: Exception) {
-            logger.error("Delete sessions error [key:$key]")
-            throw SessionException(ex.message)
-        }
-    }
-
-    private fun generateKey(channel: Channel, username: String?) =
-        "session_for:${channel.name.toUpperCase()}:${username}"
 }
 

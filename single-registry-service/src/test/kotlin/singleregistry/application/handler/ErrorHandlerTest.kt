@@ -45,46 +45,4 @@ class ErrorHandlerTest {
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.statusCode)
         Assertions.assertNotNull(response)
     }
-
-    @Test
-    fun `given an errorHandler when handling a LegalPersonNotFoundException should return HTTP status 404`() {
-        val request = webRequest
-
-        val errorHandler = ErrorHandler()
-        val expectedMessage = "error"
-        val legalPersonNotFoundException = LegalPersonNotFoundException(expectedMessage)
-
-        val response = errorHandler.handleLegalPersonNotFoundException(legalPersonNotFoundException, request)
-
-        Assertions.assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
-        Assertions.assertNotNull(response)
-    }
-
-    @Test
-    fun `given an errorHandler when handling a PersonNotFoundException should return HTTP status 404`() {
-        val request = webRequest
-
-        val errorHandler = ErrorHandler()
-        val expectedMessage = "error"
-        val personNotFoundException = PersonNotFoundException(expectedMessage)
-
-        val response = errorHandler.handlePersonNotFoundException(personNotFoundException, request)
-
-        Assertions.assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
-        Assertions.assertNotNull(response)
-    }
-
-    @Test
-    fun `given an errorHandler when handling a IndividualPersonNotFoundException should return HTTP status 404`() {
-        val request = webRequest
-
-        val errorHandler = ErrorHandler()
-        val expectedMessage = "error"
-        val individualPersonNotFoundException = IndividualPersonNotFoundException(expectedMessage)
-
-        val response = errorHandler.handleIndividualPersonNotFoundException(individualPersonNotFoundException, request)
-
-        Assertions.assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
-        Assertions.assertNotNull(response)
-    }
 }

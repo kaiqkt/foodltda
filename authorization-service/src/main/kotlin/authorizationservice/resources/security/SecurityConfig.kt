@@ -45,11 +45,19 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     override fun configure(http: HttpSecurity) {
         http.cors().and().csrf().disable()
         http.authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/users").hasRole("ADM")
-                .antMatchers(HttpMethod.POST, "/users/save").permitAll()
-                .antMatchers(HttpMethod.POST, "/users/findall").permitAll()
-                .anyRequest().authenticated()
-        http.addFilter(AuthenticationFilter(jwtUtil, authenticationManager(), userRepository, redisSessionRepository, expiration))
+            .antMatchers(HttpMethod.POST, *POST_MATCHERS).hasRole("ADM")
+            .antMatchers(HttpMethod.GET, *POST_MATCHERS).hasRole("ADM")
+//            .antMatchers(HttpMethod.GET, "/users").permitAll()
+            .anyRequest().authenticated()
+        http.addFilter(
+            AuthenticationFilter(
+                jwtUtil,
+                authenticationManager(),
+                userRepository,
+                redisSessionRepository,
+                expiration
+            )
+        )
         http.addFilter(AuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService, secret))
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     }
@@ -75,9 +83,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     companion object {
         private val POST_MATCHERS = arrayOf(
-                "/users"
+            "/users"
         )
-
-        private val GET_MATCHERS = emptyArray<String>()
     }
 }

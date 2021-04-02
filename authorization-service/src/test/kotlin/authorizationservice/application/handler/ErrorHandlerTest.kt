@@ -61,20 +61,6 @@ class ErrorHandlerTest {
     }
 
     @Test
-    fun `given an errorHandler when handling a InvalidTokenException should return HTTP status 401`() {
-        val request = webRequest
-
-        val errorHandler = ErrorHandler()
-        val expectedError = "error"
-        val invalidTokenException = InvalidTokenException(expectedError)
-
-        val response = errorHandler.handleInvalidTokenException(invalidTokenException, request)
-
-        Assertions.assertEquals(HttpStatus.UNAUTHORIZED, response.statusCode)
-        Assertions.assertNotNull(response)
-    }
-
-    @Test
     fun `given an errorHandler when handling a LoginException should return HTTP status 403`() {
         val request = webRequest
 

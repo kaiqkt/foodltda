@@ -4,6 +4,7 @@ import authorizationservice.application.dto.UserRequest
 import authorizationservice.application.dto.toDomain
 import authorizationservice.application.validation.JsonValidator
 import authorizationservice.domain.entities.User
+import authorizationservice.domain.repositories.RedisSessionRepository
 import authorizationservice.domain.services.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -21,5 +22,15 @@ class UserController(private val userService: UserService) {
 
         return ResponseEntity<User>(userService.create(user.toDomain()), HttpStatus.CREATED)
     }
+
+    @DeleteMapping
+    fun logout(): ResponseEntity<Any> {
+        userService.deleteSession()
+
+        return ResponseEntity(HttpStatus.OK)
+    }
+
+    @GetMapping
+    fun teste()  = "a"
     //update password
 }

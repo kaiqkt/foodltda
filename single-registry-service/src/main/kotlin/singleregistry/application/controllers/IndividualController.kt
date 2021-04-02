@@ -21,13 +21,16 @@ class IndividualController(private val individualService: IndividualService) {
     fun register(@Valid @RequestBody individual: IndividualRequest, result: BindingResult): ResponseEntity<Individual> {
         JsonValidator.validate(result)
 
-        return ResponseEntity<Individual>(individualService.create(individual.toDomain()), HttpStatus.CREATED)
+        return ResponseEntity<Individual>(
+            individualService.create(individual.toDomain(), individual.password),
+            HttpStatus.CREATED
+        )
     }
 
-    //getByCpf
-    @GetMapping
+    @GetMapping("/{cpf}")
     fun getByCpf(@PathVariable cpf: String): ResponseEntity<Individual> {
 
         return ResponseEntity<Individual>(individualService.findByCpf(cpf), HttpStatus.ACCEPTED)
     }
+    //get cpf by auth token
 }

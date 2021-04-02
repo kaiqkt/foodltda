@@ -11,7 +11,7 @@ import javax.validation.constraints.Email
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Pattern
-//arrumar esses regex
+
 class IndividualRequest(
     @get:NotEmpty(message = "Name cannot be empty.")
     val name: String = "",
@@ -20,17 +20,15 @@ class IndividualRequest(
     @get:NotEmpty(message = "CPF cannot be empty.")
     @get:CPF(message = "Invalid CPF.")
     val cpf: String = "",
-    //person
     @get:NotEmpty(message = "Email cannot be empty.")
     @get:Email(message = "Invalid email.")
     val email: String? = null,
-//    @get:NotEmpty(message = "Password cannot be empty.")
-//    val password: String = "",
+    @get:Pattern(regexp = "^(?=.*[A-Z].*[A-Z])(?=.*[!@#\$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8}\$", message = "Wrong password required")
+    val password: String = "",
     @get:NotEmpty(message = "Street cannot be empty.")
     val street: String? = null,
     @get:NotEmpty(message = "Number cannot be empty.")
     val number: String? = null,
-    @get:NotEmpty(message = "Complement cannot be empty.")
     val complement: String? = null,
     @get:NotEmpty(message = "District cannot be empty.")
     val district: String = "",
@@ -41,15 +39,16 @@ class IndividualRequest(
     @get:NotEmpty(message = "Country cannot be empty.")
     val country: String? = null,
     @get:NotEmpty(message = "PostalCode cannot be empty.")
+    @get:Pattern(regexp = "[0-9]{7}", message = "Postal code invalid")
     val postalCode: String? = null,
     @get:NotEmpty(message = "Country Code cannot be empty.")
-    @Pattern(regexp = "\\+?[0-9]{2}", message = "Country code invalid")
+    @get:Pattern(regexp = "\\+?[0-9]{2}", message = "Country code invalid")
     val countryCode: String = "",
     @get:NotEmpty(message = "Area Code cannot be empty.")
-    @Pattern(regexp = "[0-9]{2}", message = "Area code invalid")
+    @get:Pattern(regexp = "[0-9]{2}", message = "Area code invalid")
     val areaCode: String = "",
     @get:NotEmpty(message = "Phone Number cannot be empty.")
-    @Pattern(regexp = "[0-9]{9}", message = "Number invalid")
+    @get:Pattern(regexp = "[0-9]{9}", message = "Number invalid")
     val phoneNumber: String = ""
 )
 

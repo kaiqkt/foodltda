@@ -15,7 +15,6 @@ import javax.validation.Valid
 @RequestMapping("/legal")
 class LegalController(private val legalService: LegalService) {
 
-    // MediaType.APPLICATION_JSON_VALUE] produces={"application/json","application/xml"} rem_legal_v1
     @PostMapping
     fun register(@Valid @RequestBody legal: LegalRequest, result: BindingResult): ResponseEntity<Legal> {
         validate(result)
@@ -23,10 +22,11 @@ class LegalController(private val legalService: LegalService) {
         return ResponseEntity<Legal>(legalService.create(legal.toDomain()), HttpStatus.CREATED)
     }
 
-    //service token
     @GetMapping("/{cnpj}")
     fun getByCnpj(@PathVariable cnpj: String): ResponseEntity<Legal> {
 
         return ResponseEntity<Legal>(legalService.findByCnpj(cnpj), HttpStatus.ACCEPTED)
     }
+
+    //get cnpj by auth token
 }

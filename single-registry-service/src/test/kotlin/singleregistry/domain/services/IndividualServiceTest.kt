@@ -8,25 +8,24 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import singleregistry.domain.exceptions.DataValidationException
-import singleregistry.domain.exceptions.IndividualPersonNotFoundException
-import singleregistry.domain.exceptions.LegalPersonNotFoundException
 import singleregistry.domain.repositories.IndividualRepository
-import singleregistry.domain.repositories.LegalRepository
 import singleregistry.domain.repositories.PersonRepository
 import singleregistry.factories.IndividualFactory
-import singleregistry.factories.LegalFactory
+import singleregistry.resources.authorization.gateways.AuthorizationServiceImpl
 
 class IndividualServiceTest {
     private lateinit var individualRepository: IndividualRepository
     private lateinit var personRepository: PersonRepository
     private lateinit var individualService: IndividualService
+    private lateinit var authorizationServiceImpl: AuthorizationServiceImpl
 
 
     @BeforeEach
     fun beforeEach() {
+        authorizationServiceImpl = mockk(relaxed = true)
         personRepository = mockk(relaxed = true)
         individualRepository = mockk(relaxed = true)
-        individualService = IndividualService(personRepository, individualRepository)
+        individualService = IndividualService(personRepository, individualRepository, authorizationServiceImpl)
     }
 
     @Test
@@ -36,7 +35,7 @@ class IndividualServiceTest {
         every { personRepository.save(individual.person) } returns individual.person
         every { individualRepository.save(individual) } returns individual
 
-        individualService.create(individual)
+        individualService.create(individual, "test")
 
         verify { personRepository.save(any()) }
         verify { individualRepository.save(any()) }
@@ -50,7 +49,7 @@ class IndividualServiceTest {
         every { personRepository.existsByEmail(individual.person.email) } returns true
 
         val response = assertThrows<DataValidationException> {
-            individualService.create(individual)
+            individualService.create(individual, "test")
         }
 
         Assertions.assertEquals(error, response.details())
@@ -64,7 +63,7 @@ class IndividualServiceTest {
         every { individualRepository.existsByCpf(individual.cpf) } returns true
 
         val response = assertThrows<DataValidationException> {
-            individualService.create(individual)
+            individualService.create(individual, "test")
         }
 
         Assertions.assertEquals(error, response.details())
@@ -84,7 +83,7 @@ class IndividualServiceTest {
         } returns true
 
         val response = assertThrows<DataValidationException> {
-            individualService.create(individual)
+            individualService.create(individual, "test")
         }
 
         Assertions.assertEquals(error, response.details())
@@ -100,19 +99,5 @@ class IndividualServiceTest {
         individualService.findByCpf(cpf)
 
         verify { individualRepository.findByCpf(cpf) }
-    }
-
-    @Test
-    fun `given a invalid cnpj, should be return LegalPersonNotFoundException`() {
-        val cpf = "221.670.888-76"
-        val error = "Person not found by cpf: $cpf"
-
-        every { individualRepository.findByCpf(any()) } returns null
-
-        val response = assertThrows<IndividualPersonNotFoundException> {
-            individualService.findByCpf(cpf)
-        }
-
-        Assertions.assertEquals(error, response.message)
     }
 }

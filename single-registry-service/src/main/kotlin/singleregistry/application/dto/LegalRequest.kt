@@ -12,7 +12,7 @@ import javax.validation.constraints.Email
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Pattern
-//arrumar esses regex
+
 class LegalRequest(
     @get:NotEmpty(message = "BusinessName cannot be empty.")
     val businessName: String = "",
@@ -30,7 +30,6 @@ class LegalRequest(
     val street: String? = null,
     @get:NotEmpty(message = "Number cannot be empty.")
     val number: String? = null,
-    @get:NotEmpty(message = "Complement cannot be empty.")
     val complement: String? = null,
     @get:NotEmpty(message = "District cannot be empty.")
     val district: String = "",
@@ -41,15 +40,16 @@ class LegalRequest(
     @get:NotEmpty(message = "Country cannot be empty.")
     val country: String? = null,
     @get:NotEmpty(message = "PostalCode cannot be empty.")
+    @get:Pattern(regexp = "[0-9]{7}", message = "Postal code invalid")
     val postalCode: String? = null,
     @get:NotEmpty(message = "Country Code cannot be empty.")
-    @Pattern(regexp = "\\+?[0-9]{2}", message = "Country code invalid")
+    @get:Pattern(regexp = "\\+?[0-9]{2}", message = "Country code invalid")
     val countryCode: String = "",
     @get:NotEmpty(message = "Area Code cannot be empty.")
-    @Pattern(regexp = "[0-9]{2}", message = "Area code invalid")
+    @get:Pattern(regexp = "[0-9]{2}", message = "Area code invalid")
     val areaCode: String = "",
     @get:NotEmpty(message = "Phone Number cannot be empty.")
-    @Pattern(regexp = "[0-9]{9}", message = "Number invalid")
+    @get:Pattern(regexp = "[0-9]{9}", message = "Number invalid")
     val phoneNumber: String = ""
 )
 

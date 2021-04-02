@@ -41,7 +41,6 @@ class AuthenticationFilter(
             val user = ObjectMapper().readValue(request.inputStream, Login::class.java)
             val authToken = UsernamePasswordAuthenticationToken(user.email, user.password, ArrayList())
 
-            logger.info("Authenticate user: ${user.email}")
             authenticationManager.authenticate(authToken)
         } catch (e: IOException) {
             throw LoginException("Invalid Authentication")
@@ -65,15 +64,13 @@ class AuthenticationFilter(
         response.contentType = "application/json"
         response.addHeader("Authorization", "Bearer $token")
         response.addHeader("access-control-expose-headers", "Authorization")
-
-        logger.info("Generate token by user: ${user.email}")
     }
 
     private fun sessionDetails(request: HttpServletRequest, token: String, user: User) {
         val sessionUser = AuthSession(
             userId = user._id,
             username = user.email,
-            personId =user.personId,
+            personId = user.personId,
             channel = Channel.valueOf(request.getHeader("CHANNEL")),
             ip = request.getHeader("X-FORWARDED-FOR") ?: request.remoteAddr,
             token = token,
@@ -111,7 +108,7 @@ class AuthenticationFilter(
         this.jwtUtil = jwtUtil
         this.authenticationManager = authenticationManager
         this.userRepository = userRepository
-        this.redisRepository =  redisSessionRepository
+        this.redisRepository = redisSessionRepository
         this.expiration = expiration
     }
 }
