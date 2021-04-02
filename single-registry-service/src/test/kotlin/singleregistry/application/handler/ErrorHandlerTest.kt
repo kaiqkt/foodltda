@@ -45,4 +45,18 @@ class ErrorHandlerTest {
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.statusCode)
         Assertions.assertNotNull(response)
     }
+
+    @Test
+    fun `given an errorHandler when handling a CommunicationException should return HTTP status 400`() {
+        val request = webRequest
+
+        val errorHandler = ErrorHandler()
+        val expectedDetails = "error"
+        val communicationException = CommunicationException(expectedDetails)
+
+        val response = errorHandler.handleCommunicationException(communicationException, request)
+
+        Assertions.assertEquals(HttpStatus.BAD_GATEWAY, response.statusCode)
+        Assertions.assertNotNull(response)
+    }
 }

@@ -10,6 +10,7 @@ object LegalRequestFactory {
         cnpj = "10.501.210/0001-17",
         businessType = BusinessType.LTDA,
         email = "test@test.com",
+        password = "1234",
         street = "Rua ABC de D",
         number = "75",
         complement = "AP22",

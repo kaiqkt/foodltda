@@ -11,17 +11,20 @@ import singleregistry.domain.exceptions.DataValidationException
 import singleregistry.domain.repositories.LegalRepository
 import singleregistry.domain.repositories.PersonRepository
 import singleregistry.factories.LegalFactory
+import singleregistry.resources.authorization.gateways.AuthorizationServiceImpl
 
 class LegalServiceTest {
     private lateinit var legalRepository: LegalRepository
     private lateinit var personRepository: PersonRepository
     private lateinit var legalService: LegalService
+    private lateinit var  authorizationServiceImpl: AuthorizationServiceImpl
 
     @BeforeEach
     fun beforeEach() {
+        authorizationServiceImpl = mockk(relaxed = true)
         legalRepository = mockk(relaxed = true)
         personRepository = mockk(relaxed = true)
-        legalService = LegalService(legalRepository, personRepository)
+        legalService = LegalService(legalRepository, personRepository, authorizationServiceImpl)
     }
 
     @Test
@@ -31,7 +34,7 @@ class LegalServiceTest {
         every { personRepository.save(legal.person) } returns legal.person
         every { legalRepository.save(legal) } returns legal
 
-        legalService.create(legal)
+        legalService.create(legal, "1234")
 
         verify { personRepository.save(any()) }
         verify { legalRepository.save(any()) }
@@ -45,7 +48,7 @@ class LegalServiceTest {
         every { personRepository.existsByEmail(legal.person.email) } returns true
 
         val response = assertThrows<DataValidationException> {
-            legalService.create(legal)
+            legalService.create(legal, "password")
         }
 
         Assertions.assertEquals(error, response.details())
@@ -59,7 +62,7 @@ class LegalServiceTest {
         every { legalRepository.existsByCnpj(legal.cnpj) } returns true
 
         val response = assertThrows<DataValidationException> {
-            legalService.create(legal)
+            legalService.create(legal, "password")
         }
 
         Assertions.assertEquals(error, response.details())
@@ -79,7 +82,7 @@ class LegalServiceTest {
         } returns true
 
         val response = assertThrows<DataValidationException> {
-            legalService.create(legal)
+            legalService.create(legal, "password")
         }
 
         Assertions.assertEquals(error, response.details())

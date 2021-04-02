@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
+import singleregistry.domain.exceptions.CommunicationException
 import singleregistry.domain.exceptions.DataValidationException
 import singleregistry.domain.exceptions.ResultBindingException
 import java.time.LocalDateTime
@@ -45,5 +46,18 @@ class ErrorHandler : ResponseEntityExceptionHandler() {
         body["timestamp"] = LocalDateTime.now()
         body["message"] = ex.details()
         return ResponseEntity(body, HttpStatus.BAD_REQUEST)
+    }
+
+    @ExceptionHandler(CommunicationException::class)
+    fun handleCommunicationException(
+        ex: CommunicationException, request: WebRequest
+    ): ResponseEntity<Any> {
+        val uri: List<String> = request.getDescription(true).split(";")
+        logger.error("communication exception error: $uri")
+
+        val body: MutableMap<String, Any> = LinkedHashMap()
+        body["timestamp"] = LocalDateTime.now()
+        body["message"] = ex.message!!
+        return ResponseEntity(body, HttpStatus.BAD_GATEWAY)
     }
 }

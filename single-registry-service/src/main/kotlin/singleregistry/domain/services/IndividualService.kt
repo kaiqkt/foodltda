@@ -30,7 +30,6 @@ class IndividualService(
 
             val user = User(
                 personId = person.personId,
-                name = newIndividual.name,
                 email = person.email,
                 password = password,
                 countryCode = person.phone?.countryCode,

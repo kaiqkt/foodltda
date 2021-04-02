@@ -8,7 +8,6 @@ data class User(
     @Id
     val _id: String? = null,
     val personId: String,
-    val name: String,
     val email: String,
     @JsonIgnore
     var password: String,

@@ -24,8 +24,8 @@ class LegalRequest(
     @get:NotEmpty(message = "Email cannot be empty.")
     @get:Email(message = "Invalid email.")
     val email: String? = null,
-//    @get:NotEmpty(message = "Password cannot be empty.")
-//    val password: String = "",
+    @get:Pattern(regexp = "^(?=.*[A-Z].*[A-Z])(?=.*[!@#\$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8}\$", message = "Wrong password required")
+    val password: String = "",
     @get:NotEmpty(message = "Street cannot be empty.")
     val street: String? = null,
     @get:NotEmpty(message = "Number cannot be empty.")

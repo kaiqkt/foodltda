@@ -7,21 +7,35 @@ import singleregistry.domain.entities.legal.Legal
 import singleregistry.domain.exceptions.DataValidationException
 import singleregistry.domain.repositories.LegalRepository
 import singleregistry.domain.repositories.PersonRepository
+import singleregistry.resources.authorization.entities.User
+import singleregistry.resources.authorization.gateways.AuthorizationServiceImpl
 
 @Service
 class LegalService(
     private val legalRepository: LegalRepository,
-    private val personRepository: PersonRepository
+    private val personRepository: PersonRepository,
+    private val authorizationServiceImpl: AuthorizationServiceImpl
 ) {
     private companion object {
         val logger: Logger = LoggerFactory.getLogger(LegalService::class.java.name)
     }
 
-    fun create(legal: Legal): Legal {
+    fun create(legal: Legal, password: String): Legal {
         validateDate(legal)
 
         personRepository.save(legal.person).also { person ->
             val newLegal = legalRepository.save(legal.copy(person = person))
+
+            val user = User(
+                personId = person.personId,
+                email = person.email,
+                password = password,
+                countryCode = person.phone?.countryCode,
+                areaCode = person.phone?.areaCode,
+                phoneNumber = person.phone?.number
+            )
+
+            authorizationServiceImpl.register(user)
 
             logger.info("Legal[${newLegal._id}] created")
             return newLegal

@@ -26,11 +26,10 @@ class PersonControllerTest {
     @Test
     fun `given valid person id should return person and http status 200`() {
         val response = LegalPersonResponse(legal = LegalFactory.sample())
-        val personId = "001"
 
         every { personService.findByPersonId() } returns response
 
-        val controller = personController.getByPersonId(personId)
+        val controller = personController.getByPersonId()
 
         verify { personService.findByPersonId() }
         Assertions.assertEquals(HttpStatus.ACCEPTED, controller.statusCode)

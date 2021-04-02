@@ -7,7 +7,6 @@ import singleregistry.domain.entities.person.Phone
 
 @Repository
 interface PersonRepository: MongoRepository<Person, String> {
-    fun findByPersonId(personId: String?): Person?
     fun findByEmail(email: String?): Person?
     fun existsByEmail(email: String?): Boolean
     fun existsByPhone(phone: Phone?): Boolean

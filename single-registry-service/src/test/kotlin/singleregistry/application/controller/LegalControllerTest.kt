@@ -34,11 +34,11 @@ class LegalControllerTest {
         val request = LegalRequestFactory.sample()
         val legal = LegalFactory.sample()
 
-        every { legalService.create(request.toDomain()) } returns legal
+        every { legalService.create(request.toDomain(), request.password) } returns legal
 
         val controller = legalController.register(request, result)
 
-        verify { legalService.create(any()) }
+        verify { legalService.create(any(), any()) }
         Assertions.assertEquals(HttpStatus.CREATED, controller.statusCode)
     }
 

@@ -19,7 +19,7 @@ class LegalController(private val legalService: LegalService) {
     fun register(@Valid @RequestBody legal: LegalRequest, result: BindingResult): ResponseEntity<Legal> {
         validate(result)
 
-        return ResponseEntity<Legal>(legalService.create(legal.toDomain()), HttpStatus.CREATED)
+        return ResponseEntity<Legal>(legalService.create(legal.toDomain(), legal.password), HttpStatus.CREATED)
     }
 
     @GetMapping("/{cnpj}")
@@ -28,5 +28,4 @@ class LegalController(private val legalService: LegalService) {
         return ResponseEntity<Legal>(legalService.findByCnpj(cnpj), HttpStatus.ACCEPTED)
     }
 
-    //get cnpj by auth token
 }
