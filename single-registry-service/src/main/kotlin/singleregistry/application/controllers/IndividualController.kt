@@ -15,8 +15,6 @@ import javax.validation.Valid
 @RequestMapping("/individual")
 class IndividualController(private val individualService: IndividualService) {
 
-
-    //create
     @PostMapping
     fun register(@Valid @RequestBody individual: IndividualRequest, result: BindingResult): ResponseEntity<Individual> {
         JsonValidator.validate(result)

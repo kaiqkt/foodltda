@@ -13,7 +13,7 @@ import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Pattern
 
-class LegalRequest(
+data class LegalRequest(
     @get:NotEmpty(message = "BusinessName cannot be empty.")
     val businessName: String = "",
     @get:NotEmpty(message = "CNPJ cannot be empty.")

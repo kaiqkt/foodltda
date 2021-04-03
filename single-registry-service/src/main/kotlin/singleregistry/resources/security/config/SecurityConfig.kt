@@ -1,4 +1,4 @@
-package singleregistry.resources.security
+package singleregistry.resources.security.config
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -13,8 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
-import singleregistry.domain.repositories.PersonRepository
-import singleregistry.resources.security.config.AuthorizationFilter
+import singleregistry.resources.security.JWTUtil
 
 
 @Configuration

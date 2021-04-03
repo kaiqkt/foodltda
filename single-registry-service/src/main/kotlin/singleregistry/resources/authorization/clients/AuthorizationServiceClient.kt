@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*
 import singleregistry.resources.authorization.entities.User
 
 
-@FeignClient(name = "authorizationService", url = "http://localhost:8084")
+@FeignClient(name = "authorization-service", url = "http://localhost:8084")
 interface AuthorizationServiceClient {
 
     @PostMapping("/users")

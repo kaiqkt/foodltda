@@ -12,7 +12,7 @@ import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Pattern
 
-class IndividualRequest(
+data class IndividualRequest(
     @get:NotEmpty(message = "Name cannot be empty.")
     val name: String = "",
     @get:NotNull(message = "Nickname Type cannot be null.")

@@ -2,8 +2,6 @@ package singleregistry.domain.services
 
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
-import singleregistry.application.dto.IndividualPersonResponse
-import singleregistry.application.dto.LegalPersonResponse
 import singleregistry.domain.entities.person.PersonType
 import singleregistry.domain.repositories.IndividualRepository
 import singleregistry.domain.repositories.LegalRepository
@@ -17,12 +15,22 @@ class PersonService(
     private val individualRepository: IndividualRepository
 ) {
 
-    fun findByPersonId(): Any? {
+    fun findByToken(): Any? {
         val person = personRepository.findByEmail(authenticated()?.username)
 
         return when(person?.type) {
-             PersonType.PF -> IndividualPersonResponse(individual = individualRepository.findByPersonPersonId(person.personId))
-             PersonType.PJ -> LegalPersonResponse(legal = legalPersonRepository.findByPersonPersonId(person.personId))
+             PersonType.PF -> individualRepository.findByPersonPersonId(person.personId)
+             PersonType.PJ -> legalPersonRepository.findByPersonPersonId(person.personId)
+            else -> null
+        }
+    }
+
+    fun findByPersonId(personId: String?): Any? {
+        val person = personRepository.findByPersonId(personId)
+
+        return when(person?.type) {
+            PersonType.PF -> individualRepository.findByPersonPersonId(person.personId)
+            PersonType.PJ -> legalPersonRepository.findByPersonPersonId(person.personId)
             else -> null
         }
     }

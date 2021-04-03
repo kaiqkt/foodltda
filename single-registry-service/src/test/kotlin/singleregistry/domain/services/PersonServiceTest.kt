@@ -31,12 +31,12 @@ class PersonServiceTest {
     }
 
     @Test
-    fun `given a valid person id, should return a legal person`() {
+    fun `given a valid token, should return a legal person`() {
         val person = PersonFactory.sample(personType = PersonType.PJ)
 
         every { personRepository.findByEmail(person.email) } returns person
 
-        val response = personService.findByPersonId()
+        val response = personService.findByToken()
 
         verify { personRepository.findByEmail(any()) }
         verify { legalRepository.findByPersonPersonId(any()) }
@@ -44,7 +44,7 @@ class PersonServiceTest {
     }
 
     @Test
-    fun `given a valid person id, should return a individual person`() {
+    fun `given a valid token, should return a individual person`() {
         val person = PersonFactory.sample(personType = PersonType.PF)
         val individual = IndividualFactory.sample()
 
@@ -56,7 +56,7 @@ class PersonServiceTest {
         every { personRepository.findByEmail(person.email) } returns person
         every { individualRepository.findByPersonPersonId(person.personId) } returns individual
 
-        val response = personService.findByPersonId()
+        val response = personService.findByToken()
 
 
         verify { personRepository.findByEmail(any()) }
@@ -66,11 +66,51 @@ class PersonServiceTest {
 
 
     @Test
-    fun `given a invalid person type, should return null`() {
+    fun `given a invalid person type in token, should return null`() {
 
         every { personRepository.findByEmail(any()) } returns null
 
-        val response = personService.findByPersonId()
+        val response = personService.findByToken()
+
+        Assertions.assertNull(response)
+    }
+
+    @Test
+    fun `given a valid person id, should return a legal person`() {
+        val person = PersonFactory.sample(personType = PersonType.PJ)
+
+        every { personRepository.findByPersonId(person.personId) } returns person
+
+        val response = personService.findByPersonId(person.personId)
+
+        verify { personRepository.findByPersonId(any()) }
+        verify { legalRepository.findByPersonPersonId(any()) }
+        Assertions.assertNotNull(response)
+    }
+
+    @Test
+    fun `given a valid person id, should return a individual person`() {
+        val person = PersonFactory.sample(personType = PersonType.PF)
+        val individual = IndividualFactory.sample()
+
+        every { personRepository.findByPersonId(person.personId) } returns person
+        every { individualRepository.findByPersonPersonId(person.personId) } returns individual
+
+        val response = personService.findByPersonId(person.personId)
+
+
+        verify { personRepository.findByPersonId(any()) }
+        verify { individualRepository.findByPersonPersonId(any()) }
+        Assertions.assertNotNull(response)
+    }
+
+
+    @Test
+    fun `given a invalid person type, should return null`() {
+
+        every { personRepository.findByPersonId(any()) } returns null
+
+        val response = personService.findByPersonId("123")
 
         Assertions.assertNull(response)
     }
