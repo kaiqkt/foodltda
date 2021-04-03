@@ -9,7 +9,6 @@ class UserDetailsImpl(private val person: Person) : UserDetails {
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         val authorities: MutableCollection<GrantedAuthority> = mutableListOf<GrantedAuthority>()
-        authorities.add(SimpleGrantedAuthority("USER"))
         return authorities
     }
 

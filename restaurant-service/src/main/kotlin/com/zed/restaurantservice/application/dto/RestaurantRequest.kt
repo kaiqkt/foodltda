@@ -1,10 +1,7 @@
 package com.zed.restaurantservice.application.dto
 
 import com.zed.restaurantservice.domain.entities.filter.Payment
-import com.zed.restaurantservice.domain.entities.restaurant.Address
-import com.zed.restaurantservice.domain.entities.restaurant.Delivery
-import com.zed.restaurantservice.domain.entities.restaurant.Phone
-import com.zed.restaurantservice.domain.entities.restaurant.Restaurant
+import com.zed.restaurantservice.domain.entities.restaurant.*
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Pattern
@@ -15,7 +12,7 @@ data class RestaurantRequest(
     @get:NotEmpty(message = "Image cannot be empty.")
     val image: String = "",
     @get:NotNull(message = "Delivery time cannot be null.")
-    val delivery: Delivery? = null,
+    val deliveryInformation: MutableList<DeliveryTime> = mutableListOf(),
     @get:NotEmpty(message = "Restaurant Filter cannot be empty.")
     val restaurantFilter: String = "",
     @get:NotNull(message = "Payment methods cannot be null")
@@ -52,9 +49,9 @@ fun RestaurantRequest.toDomain() = Restaurant(
     image = this.image,
     address = this.toAddress(),
     phone =  this.toPhone(),
-    delivery = delivery,
-    restaurantFilter = this.restaurantFilter,
-    payment = this.payment
+    deliveryTime = deliveryInformation,
+    category = this.restaurantFilter,
+    payments = this.payment
 )
 
 fun RestaurantRequest.toAddress() = Address(

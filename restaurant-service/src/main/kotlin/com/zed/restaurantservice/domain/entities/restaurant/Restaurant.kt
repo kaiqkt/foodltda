@@ -9,14 +9,13 @@ data class Restaurant(
     @Id
     val _id: String? = null,
     val personId: String? = null,
-    val cnpj: String? = null,
     val slug: String? = null,
     val name: String,
     val image: String,
     val address: Address,
     val phone: Phone,
-    val delivery: Delivery?,
-    val restaurantFilter: String,
-    val payment: MutableList<Payment>,
+    val deliveryTime: MutableList<DeliveryTime> = mutableListOf(),
+    val category: String,
+    val payments: MutableList<Payment>,
     val products: MutableList<Products> = mutableListOf()
 )

@@ -3,8 +3,11 @@ package com.zed.restaurantservice.application.controller
 import com.zed.restaurantservice.application.dto.RestaurantRequest
 import com.zed.restaurantservice.application.dto.toDomain
 import com.zed.restaurantservice.application.validation.JsonValidator
+import com.zed.restaurantservice.domain.entities.filter.Payment
 import com.zed.restaurantservice.domain.entities.restaurant.Restaurant
 import com.zed.restaurantservice.domain.services.RestaurantService
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindingResult
@@ -18,15 +21,38 @@ class RestaurantController(val restaurantService: RestaurantService) {
     @PostMapping
     fun register(
         @Valid @RequestBody restaurantRequest: RestaurantRequest,
-        @RequestHeader("Authorization") token: String,
+        @RequestHeader("Authorization") auth_token: String,
         result: BindingResult
     ): ResponseEntity<Restaurant> {
         JsonValidator.validate(result)
 
         return ResponseEntity<Restaurant>(
-            restaurantService.create(restaurantRequest.toDomain(), token),
+            restaurantService.create(restaurantRequest.toDomain(), auth_token),
             HttpStatus.CREATED
         )
     }
 
+    @GetMapping
+    fun current(@RequestHeader("Authorization") auth_token: String): ResponseEntity<Restaurant> {
+
+        return ResponseEntity<Restaurant>(
+            restaurantService.findByPersonId(auth_token),
+            HttpStatus.OK
+        )
+    }
+
+    @GetMapping("/filter")
+    fun filter(@RequestParam(defaultValue = "20") limit: Int,
+               @RequestParam(defaultValue = "0") offset: Int,
+               @RequestParam(defaultValue = "") category: String?,
+               @RequestParam(defaultValue = "") name: String?,
+               @RequestParam(defaultValue = "") payment: Payment?): ResponseEntity<List<Restaurant>> {
+
+        val page = PageRequest.of(offset, limit, Sort.Direction.DESC, "name")
+
+        return ResponseEntity<List<Restaurant>>(
+            restaurantService.findRestaurants(category, name, payment, page),
+            HttpStatus.OK
+        )
+    }
 }

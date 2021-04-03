@@ -35,6 +35,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
         http.cors().and().csrf().disable()
         http.authorizeRequests()
             .antMatchers(HttpMethod.GET, *GET_MATCHER_ADM).hasRole("ADM")
+            .antMatchers(HttpMethod.GET, *GET_MATCHER_USER).hasRole("USER")
             .antMatchers(HttpMethod.POST, *POST_MATCHERS).permitAll()
             .anyRequest().authenticated()
         http.addFilter(AuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService, secret))
@@ -59,8 +60,13 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
         private val GET_MATCHER_ADM = arrayOf(
             "/individual",
-            "/legal"
+            "/legal",
+            "/person/{personId}"
         )
+        private val GET_MATCHER_USER = arrayOf(
+            "/person"
+        )
+
     }
 
 }

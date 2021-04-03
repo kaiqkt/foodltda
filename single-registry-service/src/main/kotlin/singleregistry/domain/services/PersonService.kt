@@ -12,7 +12,7 @@ import singleregistry.resources.security.UserDetailsImpl
 class PersonService(
     private val personRepository: PersonRepository,
     private val legalPersonRepository: LegalRepository,
-    private val individualRepository: IndividualRepository
+    private val individualRepository: IndividualRepository,
 ) {
 
     fun findByToken(): Any? {

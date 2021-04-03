@@ -20,11 +20,11 @@ class SingleRegistryServiceImpl(
 
     fun findByPersonId(personId: String?): Legal? {
         try {
-            val response = singleRegistryServiceClient.findByPersonId(personId, "Bearer $token")
+            val response = singleRegistryServiceClient.findByPersonId(personId, token)
             return response.body
-        } catch (ex: FeignException){
-            when(ex.status()){
-                400 -> logger.error(ex.message)
+        } catch (ex: FeignException) {
+            when (ex.status()) {
+                404 -> logger.error(ex.message)
                 403 -> logger.error(ex.message)
                 else -> throw CommunicationException("Error when find person")
             }

@@ -2,10 +2,7 @@ package singleregistry.application.controllers
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import singleregistry.domain.services.PersonService
 
 @RestController
@@ -18,9 +15,8 @@ class PersonController(private val personService: PersonService){
         return ResponseEntity<Any>(personService.findByToken(), HttpStatus.ACCEPTED)
     }
 
-    @GetMapping("/{personId)")
+    @GetMapping("/{personId}")
     fun getByPersonId(@PathVariable personId: String): ResponseEntity<Any> {
-
         return ResponseEntity<Any>(personService.findByPersonId(personId), HttpStatus.ACCEPTED)
     }
 }

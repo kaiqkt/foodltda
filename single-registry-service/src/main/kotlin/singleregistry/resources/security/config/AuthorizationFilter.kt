@@ -19,7 +19,8 @@ class AuthorizationFilter(
     authenticationManager: AuthenticationManager?,
     private val jwtUtil: JWTUtil,
     private val userDetailsService: UserDetailsService,
-    private val secret: String) :
+    private val secret: String
+) :
     BasicAuthenticationFilter(authenticationManager) {
 
     @Throws(IOException::class, ServletException::class)
@@ -44,7 +45,11 @@ class AuthorizationFilter(
         if (jwtUtil.validToken(token)) {
             val username = jwtUtil.getUsername(token)
             val user = userDetailsService.loadUserByUsername(username)
-            return UsernamePasswordAuthenticationToken(user, null, user.authorities)
+            return UsernamePasswordAuthenticationToken(
+                user,
+                null,
+                mutableListOf<GrantedAuthority>(SimpleGrantedAuthority("ROLE_USER"))
+            )
         }
         return null
     }

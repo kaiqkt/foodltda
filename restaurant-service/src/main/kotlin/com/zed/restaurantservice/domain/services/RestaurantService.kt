@@ -1,18 +1,21 @@
 package com.zed.restaurantservice.domain.services
 
 import com.github.slugify.Slugify
+import com.zed.restaurantservice.application.dto.RestaurantsResponse
+import com.zed.restaurantservice.domain.entities.filter.Payment
 import com.zed.restaurantservice.domain.entities.restaurant.Restaurant
 import com.zed.restaurantservice.domain.exceptions.DataValidationException
 import com.zed.restaurantservice.domain.exceptions.RestaurantFilterNotFoundException
 import com.zed.restaurantservice.domain.repositories.RestaurantFilterRepository
 import com.zed.restaurantservice.domain.repositories.RestaurantRepository
 import com.zed.restaurantservice.resources.security.JWTUtil
-import com.zed.restaurantservice.resources.singleregistry.entities.Legal
 import com.zed.restaurantservice.resources.singleregistry.gateways.SingleRegistryServiceImpl
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
-import java.util.*
+import java.time.LocalDate
+import java.time.LocalTime
 
 @Service
 class RestaurantService(
@@ -28,22 +31,14 @@ class RestaurantService(
     fun create(restaurant: Restaurant, token: String): Restaurant {
         validateDate(restaurant)
 
-        restaurantFilterRepository.findByName(restaurant.restaurantFilter)
+        restaurantFilterRepository.findByName(restaurant.category)
             ?: throw RestaurantFilterNotFoundException("Filter: $restaurant.restaurantFilter not found")
 
-        var slug = Slugify().slugify(restaurant.name)
-
-        if (restaurantRepository.existsBySlug(slug)) {
-            slug += "-" + UUID.randomUUID().toString().substring(0, 8)
-        }
-
-        val personId = jwtUtil.getPersonId(token)
-        val legal = singleRegistryServiceImpl.findByPersonId(personId)
+        val personId = jwtUtil.getPersonId(token.substring(7))
 
         val newRestaurant = restaurant.copy(
             personId = personId,
-            cnpj = legal?.cnpj,
-            slug = slug
+            slug = Slugify().slugify(restaurant.name)
         )
 
         restaurantRepository.save(newRestaurant).also {
@@ -52,17 +47,65 @@ class RestaurantService(
         }
     }
 
+    fun findByPersonId(token: String): Restaurant? {
+        val personId = jwtUtil.getPersonId(token.substring(7))
+
+        return restaurantRepository.findByPersonId(personId)
+    }
+
+    fun findRestaurants(category: String?, name: String?, payment: Payment?, page: PageRequest): List<Restaurant> {
+        val restaurants = restaurantRepository.findAllByCategoryAndNameAndPayments(
+            category,
+            name,
+            payment,
+            page
+        )
+
+    }
+
+    private fun openingHours(restaurants: List<Restaurant>): List<RestaurantsResponse>{
+        val restaurantsResponseClosed = mutableListOf<RestaurantsResponse>()
+        val restaurantsResponse = mutableListOf<RestaurantsResponse>()
+
+        restaurants.map { restaurant ->
+            restaurant.deliveryTime.map {
+                if (LocalDate.now().dayOfWeek == it.dayOfWeek) {
+                    if (LocalTime.now().isBefore(LocalTime.parse(it.closeThe)) && LocalTime.now().isAfter(LocalTime.parse(it.openThe))){
+                        val response = RestaurantsResponse(restaurant = restaurant, closed = false)
+
+                        restaurantsResponse.add(response)
+                    } else {
+                        val response = RestaurantsResponse(restaurant = restaurant)
+
+                        restaurantsResponseClosed.add(response)
+                    }
+                }
+            }
+        }
+
+        restaurantsResponse.addAll(restaurantsResponseClosed)
+
+        return restaurantsResponse
+    }
+
     private fun validateDate(restaurant: Restaurant) {
         val error = mutableListOf<String>()
 
-        restaurant.cnpj.let {
-            if (restaurantRepository.existsByCnpj(it)) {
-                error.add("CNPJ: $it already use")
+        restaurant.personId.let {
+            if (restaurantRepository.existsByPersonId(it)) {
+                error.add("PersonId: $it already use")
             }
         }
+
+        restaurant.name.let {
+            if (restaurantRepository.existsByName(it)) {
+                error.add("Restaurant name: $it already use")
+            }
+        }
+
         restaurant.phone.let {
             if (restaurantRepository.existsByPhone(it)) {
-                error.add("Phone: ${it.countryCode} + it.areaCode + ${it.number} already use")
+                error.add("Phone: ${it.countryCode} + ${it.areaCode} + ${it.number} already use")
             }
         }
 

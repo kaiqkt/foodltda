@@ -28,10 +28,9 @@ class JWTUtil(
         val claims = getClaims(token)
         if (claims != null) {
             val personId = claims.id
-            val person = singleRegistryServiceImpl.findByPersonId(personId)
             val expirationDate = claims.expiration
             val now = Date(System.currentTimeMillis())
-            return personId != null && expirationDate != null && now.before(expirationDate) && person != null
+            return personId != null && expirationDate != null && now.before(expirationDate)
         }
         return false
     }
