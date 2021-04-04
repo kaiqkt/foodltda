@@ -5,6 +5,7 @@ import com.zed.restaurantservice.application.dto.toDomain
 import com.zed.restaurantservice.application.validation.JsonValidator
 import com.zed.restaurantservice.domain.entities.filter.Payment
 import com.zed.restaurantservice.domain.entities.restaurant.Restaurant
+import com.zed.restaurantservice.domain.entities.restaurant.RestaurantHours
 import com.zed.restaurantservice.domain.services.RestaurantService
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -41,16 +42,25 @@ class RestaurantController(val restaurantService: RestaurantService) {
         )
     }
 
+    @GetMapping("/{slug}")
+    fun findBySlug(@PathVariable slug: String): ResponseEntity<Restaurant> {
+
+        return ResponseEntity<Restaurant>(
+            restaurantService.findBySlug(slug),
+            HttpStatus.OK
+        )
+    }
+
     @GetMapping("/filter")
     fun filter(@RequestParam(defaultValue = "20") limit: Int,
                @RequestParam(defaultValue = "0") offset: Int,
                @RequestParam(defaultValue = "") category: String?,
                @RequestParam(defaultValue = "") name: String?,
-               @RequestParam(defaultValue = "") payment: Payment?): ResponseEntity<List<Restaurant>> {
+               @RequestParam(defaultValue = "") payment: Payment?): ResponseEntity<List<RestaurantHours>> {
 
         val page = PageRequest.of(offset, limit, Sort.Direction.DESC, "name")
 
-        return ResponseEntity<List<Restaurant>>(
+        return ResponseEntity<List<RestaurantHours>>(
             restaurantService.findRestaurants(category, name, payment, page),
             HttpStatus.OK
         )

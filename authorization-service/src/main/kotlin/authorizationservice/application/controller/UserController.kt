@@ -29,8 +29,5 @@ class UserController(private val userService: UserService) {
 
         return ResponseEntity(HttpStatus.OK)
     }
-
-    @GetMapping
-    fun teste()  = "a"
     //update password
 }

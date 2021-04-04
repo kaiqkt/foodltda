@@ -1,15 +1,14 @@
 package com.zed.restaurantservice.domain.services
 
 import com.github.slugify.Slugify
-import com.zed.restaurantservice.application.dto.RestaurantsResponse
 import com.zed.restaurantservice.domain.entities.filter.Payment
 import com.zed.restaurantservice.domain.entities.restaurant.Restaurant
+import com.zed.restaurantservice.domain.entities.restaurant.RestaurantHours
 import com.zed.restaurantservice.domain.exceptions.DataValidationException
 import com.zed.restaurantservice.domain.exceptions.RestaurantFilterNotFoundException
 import com.zed.restaurantservice.domain.repositories.RestaurantFilterRepository
 import com.zed.restaurantservice.domain.repositories.RestaurantRepository
 import com.zed.restaurantservice.resources.security.JWTUtil
-import com.zed.restaurantservice.resources.singleregistry.gateways.SingleRegistryServiceImpl
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.PageRequest
@@ -21,7 +20,6 @@ import java.time.LocalTime
 class RestaurantService(
     private val restaurantRepository: RestaurantRepository,
     private val restaurantFilterRepository: RestaurantFilterRepository,
-    private val singleRegistryServiceImpl: SingleRegistryServiceImpl,
     private val jwtUtil: JWTUtil
 ) {
     companion object {
@@ -53,7 +51,7 @@ class RestaurantService(
         return restaurantRepository.findByPersonId(personId)
     }
 
-    fun findRestaurants(category: String?, name: String?, payment: Payment?, page: PageRequest): List<Restaurant> {
+    fun findRestaurants(category: String?, name: String?, payment: Payment?, page: PageRequest): List<RestaurantHours> {
         val restaurants = restaurantRepository.findAllByCategoryAndNameAndPayments(
             category,
             name,
@@ -61,31 +59,41 @@ class RestaurantService(
             page
         )
 
+        return getOpenedRestaurants(restaurants)
     }
 
-    private fun openingHours(restaurants: List<Restaurant>): List<RestaurantsResponse>{
-        val restaurantsResponseClosed = mutableListOf<RestaurantsResponse>()
-        val restaurantsResponse = mutableListOf<RestaurantsResponse>()
+    fun findBySlug(slug: String) = restaurantRepository.findBySlug(slug)
+
+    private fun getOpenedRestaurants(restaurants: List<Restaurant>): List<RestaurantHours> {
+        val restaurantsResponse = mutableListOf<RestaurantHours>()
 
         restaurants.map { restaurant ->
-            restaurant.deliveryTime.map {
+            restaurant.openingHours.map {
                 if (LocalDate.now().dayOfWeek == it.dayOfWeek) {
-                    if (LocalTime.now().isBefore(LocalTime.parse(it.closeThe)) && LocalTime.now().isAfter(LocalTime.parse(it.openThe))){
-                        val response = RestaurantsResponse(restaurant = restaurant, closed = false)
+                    if (LocalTime.now().isBefore(LocalTime.parse(it.closeAt)) && LocalTime.now()
+                            .isAfter(LocalTime.parse(it.openAt))
+                    ) {
+                        val response = RestaurantHours(
+                            restaurant = restaurant,
+                            openAt = it.openAt,
+                            closeAt = it.closeAt,
+                            closed = false)
 
                         restaurantsResponse.add(response)
-                    } else {
-                        val response = RestaurantsResponse(restaurant = restaurant)
-
-                        restaurantsResponseClosed.add(response)
                     }
+                    val response = RestaurantHours(
+                        restaurant = restaurant,
+                        openAt = it.openAt,
+                        closeAt = it.closeAt,
+                    )
+
+                    restaurantsResponse.add(response)
+
                 }
             }
         }
 
-        restaurantsResponse.addAll(restaurantsResponseClosed)
-
-        return restaurantsResponse
+        return restaurantsResponse.sortedBy { !it.closed }
     }
 
     private fun validateDate(restaurant: Restaurant) {

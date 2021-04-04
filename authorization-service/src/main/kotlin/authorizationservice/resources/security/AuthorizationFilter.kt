@@ -43,7 +43,10 @@ class AuthorizationFilter(
         if (jwtUtil.validToken(token)) {
             val username = jwtUtil.getUsername(token)
             val user = userDetailsService.loadUserByUsername(username)
-            return UsernamePasswordAuthenticationToken(user, null, user.authorities)
+            return UsernamePasswordAuthenticationToken(
+                user,
+                null,
+                mutableListOf<GrantedAuthority>(SimpleGrantedAuthority("ROLE_USER")))
         }
         return null
     }

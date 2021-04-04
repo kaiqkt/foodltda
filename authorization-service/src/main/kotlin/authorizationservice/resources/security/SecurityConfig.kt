@@ -46,8 +46,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
         http.cors().and().csrf().disable()
         http.authorizeRequests()
             .antMatchers(HttpMethod.POST, *POST_MATCHERS).hasRole("ADM")
-            .antMatchers(HttpMethod.GET, *POST_MATCHERS).hasRole("ADM")
-//            .antMatchers(HttpMethod.GET, "/users").permitAll()
+            .antMatchers(HttpMethod.DELETE, *DELETE_MATCHERS).hasRole("USER")
             .anyRequest().authenticated()
         http.addFilter(
             AuthenticationFilter(
@@ -83,6 +82,10 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     companion object {
         private val POST_MATCHERS = arrayOf(
+            "/users"
+        )
+
+        private val DELETE_MATCHERS = arrayOf(
             "/users"
         )
     }

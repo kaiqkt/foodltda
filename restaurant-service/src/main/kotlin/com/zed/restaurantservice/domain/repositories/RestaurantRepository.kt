@@ -13,6 +13,7 @@ interface RestaurantRepository : MongoRepository<Restaurant, String> {
     fun existsByPersonId(personId: String?): Boolean
     fun existsByName(name: String): Boolean
     fun findByPersonId(personId: String?): Restaurant?
+    fun findBySlug(slug: String?): Restaurant?
     fun findAllByCategoryAndNameAndPayments(
         filter: String?,
         name: String?,

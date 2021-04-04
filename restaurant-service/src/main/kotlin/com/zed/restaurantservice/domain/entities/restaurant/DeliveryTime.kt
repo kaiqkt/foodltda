@@ -6,6 +6,6 @@ import java.time.DayOfWeek
 data class DeliveryTime (
 //       HH:mm:ss
         val dayOfWeek: DayOfWeek,
-        val openThe: String,
-        val closeThe: String
+        val openAt: String,
+        val closeAt: String
 )
