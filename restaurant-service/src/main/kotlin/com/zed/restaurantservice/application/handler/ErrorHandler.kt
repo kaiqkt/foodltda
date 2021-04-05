@@ -1,6 +1,7 @@
 package com.zed.restaurantservice.application.handler
 
-import com.zed.restaurantservice.domain.exceptions.RestaurantFilterNotFoundException
+import com.zed.restaurantservice.domain.exceptions.DataValidationException
+import com.zed.restaurantservice.domain.exceptions.CategoryNotFoundException
 import com.zed.restaurantservice.domain.exceptions.ResultBindingException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -18,7 +19,7 @@ class ErrorHandler : ResponseEntityExceptionHandler() {
     fun handleResultBindingException(
         ex: ResultBindingException?, request: WebRequest?): ResponseEntity<Any?>? {
         val uri: List<String>? = request?.getDescription(true)?.split(";")
-        logger.error("Invalid result binding: ${uri?.get(0)}")
+        logger.error("Invalid result binding exception: ${uri?.get(0)}")
 
         val body: MutableMap<String, Any> = LinkedHashMap()
         body["timestamp"] = LocalDateTime.now()
@@ -26,9 +27,21 @@ class ErrorHandler : ResponseEntityExceptionHandler() {
         return ResponseEntity(body, HttpStatus.BAD_REQUEST)
     }
 
-    @ExceptionHandler(RestaurantFilterNotFoundException::class)
+    @ExceptionHandler(DataValidationException::class)
+    fun handleDataValidationException(
+        ex: DataValidationException?, request: WebRequest?): ResponseEntity<Any?>? {
+        val uri: List<String>? = request?.getDescription(true)?.split(";")
+        logger.error("Data validation exception: ${uri?.get(0)}")
+
+        val body: MutableMap<String, Any> = LinkedHashMap()
+        body["timestamp"] = LocalDateTime.now()
+        body["message"] = ex?.details()!!
+        return ResponseEntity(body, HttpStatus.BAD_REQUEST)
+    }
+
+    @ExceptionHandler(CategoryNotFoundException::class)
     fun handleRestaurantFilterNotFoundException(
-        ex: RestaurantFilterNotFoundException?, request: WebRequest?): ResponseEntity<Any?>? {
+        ex: CategoryNotFoundException?, request: WebRequest?): ResponseEntity<Any?>? {
         val uri: List<String>? = request?.getDescription(true)?.split(";")
         logger.error("Restaurant filter not found: ${uri?.get(0)}")
 

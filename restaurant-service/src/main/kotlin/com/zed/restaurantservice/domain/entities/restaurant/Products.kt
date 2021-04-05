@@ -13,6 +13,6 @@ data class Products (
         val image: String?,
         val price: BigDecimal?,
         val description: String?,
-        val tag: FoodFilter?,
+        val filter: Filter?,
         val restaurantId: String
 )

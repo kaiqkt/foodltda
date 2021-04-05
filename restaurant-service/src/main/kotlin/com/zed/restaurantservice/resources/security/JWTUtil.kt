@@ -1,6 +1,5 @@
 package com.zed.restaurantservice.resources.security
 
-import com.zed.restaurantservice.resources.singleregistry.gateways.SingleRegistryServiceImpl
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
@@ -12,7 +11,6 @@ import java.util.Date
 class JWTUtil(
     @Value("\${jwt.secret}") private var secret: String,
     @Value("\${jwt.expiration}") private var expiration: String,
-    private val singleRegistryServiceImpl: SingleRegistryServiceImpl
 ) {
 
     fun generateToken(personId: String?, email: String?): String {

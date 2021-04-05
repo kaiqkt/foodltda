@@ -4,8 +4,9 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
 @Document
-data class RestaurantFilter (
+data class Category (
         @Id
-        var id: String? = null,
-        val name: String = "",
+        var _id: String? = null,
+        val name: String,
+        val image: String,
 )

@@ -4,7 +4,7 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
 @Document
-data class FoodFilter (
+data class Filter (
         @Id
         var id: String? = null,
         val name: String = "",

@@ -5,8 +5,8 @@ import com.zed.restaurantservice.domain.entities.filter.Payment
 import com.zed.restaurantservice.domain.entities.restaurant.Restaurant
 import com.zed.restaurantservice.domain.entities.restaurant.RestaurantHours
 import com.zed.restaurantservice.domain.exceptions.DataValidationException
-import com.zed.restaurantservice.domain.exceptions.RestaurantFilterNotFoundException
-import com.zed.restaurantservice.domain.repositories.RestaurantFilterRepository
+import com.zed.restaurantservice.domain.exceptions.CategoryNotFoundException
+import com.zed.restaurantservice.domain.repositories.CategoryRepository
 import com.zed.restaurantservice.domain.repositories.RestaurantRepository
 import com.zed.restaurantservice.resources.security.JWTUtil
 import org.slf4j.Logger
@@ -19,7 +19,7 @@ import java.time.LocalTime
 @Service
 class RestaurantService(
     private val restaurantRepository: RestaurantRepository,
-    private val restaurantFilterRepository: RestaurantFilterRepository,
+    private val categoryRepository: CategoryRepository,
     private val jwtUtil: JWTUtil
 ) {
     companion object {
@@ -27,17 +27,18 @@ class RestaurantService(
     }
 
     fun create(restaurant: Restaurant, token: String): Restaurant {
-        validateDate(restaurant)
-
-        restaurantFilterRepository.findByName(restaurant.category)
-            ?: throw RestaurantFilterNotFoundException("Filter: $restaurant.restaurantFilter not found")
-
         val personId = jwtUtil.getPersonId(token.substring(7))
 
         val newRestaurant = restaurant.copy(
             personId = personId,
             slug = Slugify().slugify(restaurant.name)
         )
+
+
+        validateDate(newRestaurant)
+
+        categoryRepository.findByName(restaurant.category)
+            ?: throw CategoryNotFoundException("Restaurant category ${restaurant.category} not found")
 
         restaurantRepository.save(newRestaurant).also {
             logger.info("Restaurant[${it._id}] created ")
@@ -52,12 +53,19 @@ class RestaurantService(
     }
 
     fun findRestaurants(category: String?, name: String?, payment: Payment?, page: PageRequest): List<RestaurantHours> {
-        val restaurants = restaurantRepository.findAllByCategoryAndNameAndPayments(
-            category,
-            name,
-            payment,
-            page
-        )
+        val filters = category.isNullOrBlank() && name.isNullOrBlank() && payment == null
+
+        val restaurants = if (!filters) {
+            restaurantRepository.findAllByCategoryOrNameOrPayments(
+                category,
+                name,
+                payment,
+                page
+            )
+        } else {
+            restaurantRepository.findAll(page).toList()
+        }
+
 
         return getOpenedRestaurants(restaurants)
     }
@@ -70,30 +78,37 @@ class RestaurantService(
         restaurants.map { restaurant ->
             restaurant.openingHours.map {
                 if (LocalDate.now().dayOfWeek == it.dayOfWeek) {
-                    if (LocalTime.now().isBefore(LocalTime.parse(it.closeAt)) && LocalTime.now()
-                            .isAfter(LocalTime.parse(it.openAt))
+                    val openAt = LocalTime.parse(it.openAt)
+                    var closeAt = LocalTime.parse(it.closeAt)
+
+                    if (it.closeAt == "00:00:00") {
+                        closeAt = LocalTime.parse("23:59")
+                    }
+
+                    if (LocalTime.now().isAfter(openAt) && LocalTime.now()
+                            .isBefore(closeAt)
                     ) {
                         val response = RestaurantHours(
                             restaurant = restaurant,
                             openAt = it.openAt,
                             closeAt = it.closeAt,
-                            closed = false)
+                            closed = false
+                        )
+
+                        restaurantsResponse.add(response)
+                    } else {
+                        val response = RestaurantHours(
+                            restaurant = restaurant,
+                            openAt = it.openAt,
+                            closeAt = it.closeAt,
+                        )
 
                         restaurantsResponse.add(response)
                     }
-                    val response = RestaurantHours(
-                        restaurant = restaurant,
-                        openAt = it.openAt,
-                        closeAt = it.closeAt,
-                    )
-
-                    restaurantsResponse.add(response)
-
                 }
             }
         }
-
-        return restaurantsResponse.sortedBy { !it.closed }
+        return restaurantsResponse.sortedBy { it.closed }
     }
 
     private fun validateDate(restaurant: Restaurant) {
@@ -113,7 +128,7 @@ class RestaurantService(
 
         restaurant.phone.let {
             if (restaurantRepository.existsByPhone(it)) {
-                error.add("Phone: ${it.countryCode} + ${it.areaCode} + ${it.number} already use")
+                error.add("Phone: ${it.countryCode}${it.areaCode}${it.number} already use")
             }
         }
 

@@ -13,7 +13,7 @@ class TagService(val tagRepository: TagRepository, val productsRepository: Produ
 
     companion object {
         val logger: Logger = LoggerFactory.getLogger(TagService::class.java.name)
-    }
+    }           
 
     fun find(name: String?, restaurantId: String?) = tagRepository.findByNameAndRestaurantId(name, restaurantId)
 

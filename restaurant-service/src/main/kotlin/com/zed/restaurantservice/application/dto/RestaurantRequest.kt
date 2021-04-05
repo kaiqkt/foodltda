@@ -11,11 +11,11 @@ data class RestaurantRequest(
     val name: String = "",
     @get:NotEmpty(message = "Image cannot be empty.")
     val image: String = "",
-    @get:NotNull(message = "Delivery time cannot be null.")
-    val deliveryInformation: MutableList<DeliveryTime> = mutableListOf(),
+    @get:NotEmpty(message = "Delivery time cannot be null.")
+    val delivery: MutableList<DeliveryTime> =  mutableListOf(),
     @get:NotEmpty(message = "Restaurant Filter cannot be empty.")
     val restaurantFilter: String = "",
-    @get:NotNull(message = "Payment methods cannot be null")
+    @get:NotEmpty(message = "Payment methods cannot be null")
     val payment: MutableList<Payment> = mutableListOf(),
     @get:NotEmpty(message = "Street cannot be empty.")
     val street: String = "",
@@ -49,7 +49,7 @@ fun RestaurantRequest.toDomain() = Restaurant(
     image = this.image,
     address = this.toAddress(),
     phone =  this.toPhone(),
-    openingHours = deliveryInformation,
+    openingHours = delivery,
     category = this.restaurantFilter,
     payments = this.payment
 )
