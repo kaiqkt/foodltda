@@ -19,5 +19,6 @@ data class Restaurant(
     val openingHours: MutableList<DeliveryTime> = mutableListOf(),
     val category: String,
     val payments: MutableList<Payment>,
-    val products: MutableList<Products> = mutableListOf()
+    val products: MutableList<Product> = mutableListOf(),
+    val productsCategories: MutableList<ProductCategory> = mutableListOf(),
 )

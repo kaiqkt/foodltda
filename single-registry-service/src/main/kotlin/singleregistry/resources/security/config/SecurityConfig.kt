@@ -63,6 +63,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             "/legal",
             "/person/{personId}"
         )
+
         private val GET_MATCHER_USER = arrayOf(
             "/person"
         )

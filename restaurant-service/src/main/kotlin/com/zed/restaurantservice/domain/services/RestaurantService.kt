@@ -6,9 +6,11 @@ import com.zed.restaurantservice.domain.entities.restaurant.Restaurant
 import com.zed.restaurantservice.domain.entities.restaurant.RestaurantHours
 import com.zed.restaurantservice.domain.exceptions.DataValidationException
 import com.zed.restaurantservice.domain.exceptions.CategoryNotFoundException
+import com.zed.restaurantservice.domain.exceptions.NotLegalPersonException
 import com.zed.restaurantservice.domain.repositories.CategoryRepository
 import com.zed.restaurantservice.domain.repositories.RestaurantRepository
 import com.zed.restaurantservice.resources.security.JWTUtil
+import com.zed.restaurantservice.resources.singleregistry.gateways.SingleRegistryImpl
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.PageRequest
@@ -20,6 +22,7 @@ import java.time.LocalTime
 class RestaurantService(
     private val restaurantRepository: RestaurantRepository,
     private val categoryRepository: CategoryRepository,
+    private val singleRegistryImpl: SingleRegistryImpl,
     private val jwtUtil: JWTUtil
 ) {
     companion object {
@@ -29,11 +32,14 @@ class RestaurantService(
     fun create(restaurant: Restaurant, token: String): Restaurant {
         val personId = jwtUtil.getPersonId(token.substring(7))
 
+        if (!singleRegistryImpl.isLegalPerson(personId)){
+            throw NotLegalPersonException("Person $personId is not valid for create a new restaurant")
+        }
+
         val newRestaurant = restaurant.copy(
             personId = personId,
             slug = Slugify().slugify(restaurant.name)
         )
-
 
         validateDate(newRestaurant)
 

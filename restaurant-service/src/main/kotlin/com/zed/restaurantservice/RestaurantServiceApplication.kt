@@ -8,6 +8,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients
 @SpringBootApplication
 class RestaurantServiceApplication
 
+
 fun main(args: Array<String>) {
-	runApplication<RestaurantServiceApplication>(*args)
+    runApplication<RestaurantServiceApplication>(*args)
 }
