@@ -42,7 +42,7 @@ class RestaurantController(val restaurantService: RestaurantService) {
         )
     }
 
-    @GetMapping("/{slug}")
+    @GetMapping("/slug/{slug}")
     fun findBySlug(@PathVariable slug: String): ResponseEntity<Restaurant> {
 
         return ResponseEntity<Restaurant>(

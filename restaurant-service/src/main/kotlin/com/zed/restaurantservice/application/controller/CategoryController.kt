@@ -25,7 +25,7 @@ class CategoryController(private val categoryService: CategoryService) {
         )
     }
 
-    @GetMapping
+    @GetMapping("/categories")
     fun findAll(): ResponseEntity<List<Category>> {
 
         return ResponseEntity<List<Category>>(
