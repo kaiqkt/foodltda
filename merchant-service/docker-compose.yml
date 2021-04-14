@@ -1,0 +1,16 @@
+version: "3"
+services:
+  mongodb:
+    container_name: mongo
+    image: mongo:latest
+    ports:
+      - 27018:27017
+    volumes:
+      - ./docker/mongodb/:/docker-entrypoint-initdb.d
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - 6379:6379
+    volumes:
+      - ./docker/redis/:/docker-entrypoint-initdb.d
