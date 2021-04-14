@@ -3,6 +3,7 @@ server:
 
 jwt.secret: mysecret
 jwt.expiration: 7200000
+token: 123SINGLE56
 single_registry_token: 123SINGLE56
 
 spring:
