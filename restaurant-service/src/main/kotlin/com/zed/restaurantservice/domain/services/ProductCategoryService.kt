@@ -6,6 +6,7 @@ import com.zed.restaurantservice.domain.exceptions.RestaurantNotFoundException
 import com.zed.restaurantservice.domain.repositories.ProductCategoryRepository
 import com.zed.restaurantservice.domain.repositories.RestaurantRepository
 import com.zed.restaurantservice.resources.security.JWTUtil
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
@@ -14,6 +15,8 @@ class ProductCategoryService(
     private val restaurantRepository: RestaurantRepository,
     private val jwtUtil: JWTUtil
 ) {
+
+    private val log = LoggerFactory.getLogger(javaClass)
 
     fun create(productCategory: ProductCategory, token: String): ProductCategory {
         val personId = jwtUtil.getPersonId(token.substring(7))
@@ -26,7 +29,7 @@ class ProductCategoryService(
                 restaurant.productsCategories.add(it)
                 restaurantRepository.save(restaurant)
 
-                ProductService.logger.info("Product Category[${it._id}] created ")
+                log.info("Product Category[${it._id}] created ")
                 return it
             }
     }

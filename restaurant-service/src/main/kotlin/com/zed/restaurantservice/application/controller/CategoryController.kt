@@ -30,7 +30,7 @@ class CategoryController(private val categoryService: CategoryService) {
 
         return ResponseEntity<List<Category>>(
             categoryService.findAll(),
-            HttpStatus.CREATED
+            HttpStatus.OK
         )
     }
 }

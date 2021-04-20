@@ -25,9 +25,8 @@ class RestaurantService(
     private val singleRegistryImpl: SingleRegistryImpl,
     private val jwtUtil: JWTUtil
 ) {
-    companion object {
-        val logger: Logger = LoggerFactory.getLogger(RestaurantService::class.java.name)
-    }
+
+    private val log = LoggerFactory.getLogger(javaClass)
 
     fun create(restaurant: Restaurant, token: String): Restaurant {
         val personId = jwtUtil.getPersonId(token.substring(7))
@@ -47,7 +46,7 @@ class RestaurantService(
             ?: throw CategoryNotFoundException("Restaurant category ${restaurant.category} not found")
 
         restaurantRepository.save(newRestaurant).also {
-            logger.info("Restaurant[${it._id}] created ")
+            log.info("Restaurant[${it._id}] created ")
             return it
         }
     }

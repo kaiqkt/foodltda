@@ -17,7 +17,7 @@ import javax.validation.Valid
 
 @RestController
 @RequestMapping("/restaurant")
-class RestaurantController(val restaurantService: RestaurantService) {
+class RestaurantController(private val restaurantService: RestaurantService) {
 
     @PostMapping
     fun register(

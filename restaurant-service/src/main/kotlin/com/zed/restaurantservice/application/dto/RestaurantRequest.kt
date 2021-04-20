@@ -49,7 +49,7 @@ fun RestaurantRequest.toDomain() = Restaurant(
     image = this.image,
     address = this.toAddress(),
     phone =  this.toPhone(),
-    openingHours = delivery,
+    openingHours = this.delivery,
     category = this.restaurantFilter,
     payments = this.payment
 )

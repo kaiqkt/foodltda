@@ -164,7 +164,7 @@
 					<excludes>
 						<exclude>**/domain/entities/**</exclude>
 						<exclude>**/application/dto/**</exclude>
-						<exclude>**/SingleRegistryServiceApplication**</exclude>
+						<exclude>**/RestaurantServiceApplication**</exclude>
 						<exclude>**/application/validation/**</exclude>
 						<exclude>**/resources/security/**</exclude>
 						<exclude>**/resources/authorization/entities/**</exclude>

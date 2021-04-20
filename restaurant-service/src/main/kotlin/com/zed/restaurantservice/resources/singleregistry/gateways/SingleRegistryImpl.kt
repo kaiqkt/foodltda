@@ -15,13 +15,10 @@ class SingleRegistryImpl(
     @Value("\${single_registry_token}") private var token: String
 ) {
 
-    private companion object {
-        val logger: Logger = LoggerFactory.getLogger(SingleRegistryImpl::class.java.name)
-    }
+    private val log = LoggerFactory.getLogger(javaClass)
 
     fun isLegalPerson(personId: String?): Boolean {
         var isLegal = false
-        print(personId)
 
         try {
             singleRegistryClient.findByPersonId(personId, token).let {
@@ -33,8 +30,8 @@ class SingleRegistryImpl(
 
         } catch (ex: FeignException) {
             when (ex.status()) {
-                400 -> logger.error(ex.message)
-                403 -> logger.error(ex.message)
+                400 -> log.error(ex.message)
+                403 -> log.error(ex.message)
                 else -> throw CommunicationException("Error when find person $personId")
             }
         }

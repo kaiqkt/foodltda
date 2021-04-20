@@ -50,7 +50,7 @@ class ProductController(
     }
 
     @GetMapping("/slug/{slug}/restaurant/{restaurantId}")
-    fun findBySlug(@PathVariable slug: String, @PathVariable restaurantId: String): ResponseEntity<Product> {
+    fun findBySlugAndRestaurantID(@PathVariable slug: String, @PathVariable restaurantId: String): ResponseEntity<Product> {
 
         return ResponseEntity<Product>(
             productService.findBySlugAndRestaurantId(slug, restaurantId),
@@ -59,7 +59,7 @@ class ProductController(
     }
 
     @GetMapping("/category/{category}/restaurant/{restaurantId}")
-    fun findByCategory(
+    fun findAllByCategory(
         @PathVariable category: String,
         @PathVariable restaurantId: String
     ): ResponseEntity<List<Product>> {
@@ -71,7 +71,7 @@ class ProductController(
     }
 
     @GetMapping("/category/{restaurantId}/categories")
-    fun findAllCategoryByRestaurant(
+    fun findAllCategoryByRestaurantId(
         @PathVariable restaurantId: String
     ): ResponseEntity<List<ProductCategory>> {
 
@@ -81,11 +81,11 @@ class ProductController(
         )
     }
 
-    @GetMapping("/{id}/products")
-    fun findAll(@PathVariable id: String): ResponseEntity<List<Product>> {
+    @GetMapping("/{restaurantId}/products")
+    fun findAll(@PathVariable restaurantId: String): ResponseEntity<List<Product>> {
 
         return ResponseEntity<List<Product>>(
-            productService.findAll(id),
+            productService.findAll(restaurantId),
             HttpStatus.OK
         )
     }

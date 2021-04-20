@@ -10,14 +10,12 @@ import org.springframework.stereotype.Service
 @Service
 class CategoryService(private val categoryRepository: CategoryRepository) {
 
-    companion object {
-        val logger: Logger = LoggerFactory.getLogger(CategoryService::class.java.name)
-    }
+    private val log = LoggerFactory.getLogger(javaClass)
 
     fun create(category: Category): Category {
         validateDate(category)
 
-        return categoryRepository.save(category).also { logger.info("Category[${it._id}] created ") }
+        return categoryRepository.save(category).also { log.info("Category[${it._id}] created ") }
     }
 
     fun findAll(): List<Category> {

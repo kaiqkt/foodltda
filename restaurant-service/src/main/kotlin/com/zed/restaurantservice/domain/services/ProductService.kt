@@ -21,9 +21,7 @@ class ProductService(
     private val jwtUtil: JWTUtil
 ) {
 
-    companion object {
-        val logger: Logger = LoggerFactory.getLogger(ProductService::class.java.name)
-    }
+    private val log = LoggerFactory.getLogger(javaClass)
 
     fun create(product: Product, token: String): Product {
         val personId = jwtUtil.getPersonId(token.substring(7))
@@ -44,7 +42,7 @@ class ProductService(
             restaurant.products.add(it)
             restaurantRepository.save(restaurant)
 
-            logger.info("Product[${it._id}] created ")
+            log.info("Product[${it._id}] created ")
             return it
         }
     }
