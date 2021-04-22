@@ -1,4 +1,4 @@
-package com.orderservice.orderservice.domain.entities
+package com.orderservice.paymentservice.domain.entities
 
 import java.math.BigDecimal
 

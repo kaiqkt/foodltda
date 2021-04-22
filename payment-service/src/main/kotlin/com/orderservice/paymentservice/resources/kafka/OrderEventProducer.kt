@@ -1,6 +1,8 @@
-package com.orderservice.orderservice.domain.events
+package com.orderservice.paymentservice.resources.kafka
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.orderservice.paymentservice.domain.events.Event
+import com.orderservice.paymentservice.domain.events.OrderEvent
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.kafka.common.header.Header
 import org.apache.kafka.common.header.internals.RecordHeader
@@ -21,7 +23,7 @@ class OrderEventProducer(
     private fun getProducerRecord(event: Event, topic: String): ProducerRecord<String, String> {
         val serializedEvent = objectMapper.writeValueAsString(event)
         val eventTypeHeader = RecordHeader("eventType", objectMapper.writeValueAsBytes(
-            StartSagaEvent::class.simpleName))
+            OrderEvent::class.simpleName))
         val headers = listOf<Header>(eventTypeHeader)
 
         return ProducerRecord(

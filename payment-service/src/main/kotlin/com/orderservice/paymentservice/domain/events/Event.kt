@@ -1,6 +1,6 @@
-package com.orderservice.orderservice.domain.events
+package com.orderservice.paymentservice.domain.events
 
-import com.orderservice.orderservice.domain.entities.Order
+import com.orderservice.paymentservice.domain.entities.Order
 
 abstract class Event {
     abstract val eventId: String

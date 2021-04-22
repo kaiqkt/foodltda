@@ -3,14 +3,14 @@ package com.orderservice.orderservice.domain.events
 import com.orderservice.orderservice.domain.entities.Order
 import io.azam.ulidj.ULID
 
-class StartSagaEvent(
+class OrderEvent(
     override val eventId: String,
-    private val order: Order
-) : Event(order) {
+    val order: Order
+) : Event() {
 
     companion object {
-        fun create(order: Order): StartSagaEvent {
-            return StartSagaEvent(
+        fun create(order: Order): OrderEvent {
+            return OrderEvent(
                 eventId = ULID.random(),
                 order = order
             )
