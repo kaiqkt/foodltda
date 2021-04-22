@@ -51,6 +51,15 @@ class RestaurantController(private val restaurantService: RestaurantService) {
         )
     }
 
+    @GetMapping("/{restaurantId}")
+    fun findByRestaurantId(@PathVariable restaurantId: String): ResponseEntity<Restaurant> {
+
+        return ResponseEntity<Restaurant>(
+            restaurantService.findByRestaurantId(restaurantId),
+            HttpStatus.OK
+        )
+    }
+
     @GetMapping("/filter")
     fun filter(@RequestParam(defaultValue = "20") limit: Int,
                @RequestParam(defaultValue = "0") offset: Int,

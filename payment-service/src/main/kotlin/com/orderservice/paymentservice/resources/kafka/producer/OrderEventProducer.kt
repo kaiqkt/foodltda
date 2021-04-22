@@ -1,8 +1,9 @@
-package com.orderservice.paymentservice.resources.kafka
+package com.orderservice.paymentservice.resources.kafka.producer
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.orderservice.paymentservice.domain.events.Event
 import com.orderservice.paymentservice.domain.events.OrderEvent
+import com.orderservice.paymentservice.resources.kafka.producer.EventProducer
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.kafka.common.header.Header
 import org.apache.kafka.common.header.internals.RecordHeader

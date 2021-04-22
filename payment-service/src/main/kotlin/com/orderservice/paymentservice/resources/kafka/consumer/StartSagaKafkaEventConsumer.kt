@@ -1,4 +1,4 @@
-package com.orderservice.paymentservice.resources.kafka
+package com.orderservice.paymentservice.resources.kafka.consumer
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.orderservice.paymentservice.domain.constants.START_TOPIC
@@ -31,6 +31,6 @@ class StartSagaKafkaEventConsumer(
                 )
             } id ${consumerRecord.key()} from topic  ${consumerRecord.topic()} for person ${order.personId}"
         )
-//        service.execute(order)
+        service.execute(order)
     }
 }

@@ -1,4 +1,4 @@
-package com.orderservice.paymentservice.resources.kafka
+package com.orderservice.paymentservice.resources.kafka.producer
 
 import com.orderservice.paymentservice.domain.events.Event
 

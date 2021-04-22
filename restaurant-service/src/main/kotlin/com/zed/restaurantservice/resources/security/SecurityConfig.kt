@@ -33,6 +33,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
         print(secret)
         http.cors().and().csrf().disable()
         http.authorizeRequests()
+            .antMatchers(HttpMethod.GET, *GET_MATCHER_ADM).hasRole("ADM")
             .anyRequest().authenticated()
         http.addFilter(AuthorizationFilter(authenticationManager(), jwtUtil,  secret))
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -48,22 +49,20 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
         return source
     }
 //
-//    companion object {
+    companion object {
 //        private val POST_MATCHERS = arrayOf(
 //            "/individual",
 //            "/legal"
 //        )
 //
-//        private val GET_MATCHER_ADM = arrayOf(
-//            "/individual",
-//            "/legal",
-//            "/person/{personId}"
-//        )
+        private val GET_MATCHER_ADM = arrayOf(
+            "/restaurant/{restaurantId}"
+        )
 //
 //        private val GET_MATCHER_USER = arrayOf(
 //            "/person"
 //        )
 //
-//    }
+    }
 
 }

@@ -1,6 +1,5 @@
 package com.zed.restaurantservice.resources.singleregistry.clients
 
-import com.zed.restaurantservice.resources.singleregistry.entities.Person
 import com.zed.restaurantservice.resources.singleregistry.entities.Response
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.http.ResponseEntity

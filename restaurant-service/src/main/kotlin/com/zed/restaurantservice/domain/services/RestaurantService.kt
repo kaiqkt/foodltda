@@ -77,6 +77,8 @@ class RestaurantService(
 
     fun findBySlug(slug: String) = restaurantRepository.findBySlug(slug)
 
+    fun findByRestaurantId(restaurantId: String) = restaurantRepository.findById(restaurantId).get()
+
     private fun getOpenedRestaurants(restaurants: List<Restaurant>): List<RestaurantHours> {
         val restaurantsResponse = mutableListOf<RestaurantHours>()
 
